@@ -1,0 +1,9 @@
+module Comptes {
+  interface Compte{
+    readonly attribute double somme;
+    void deposeBillets(in double montant);
+    boolean retireBillets(in double montant);
+    double afficheMontant();
+    boolean virementCompteaCompte(in double somme ,in Compte cpt);
+  };
+};

@@ -1,0 +1,8 @@
+set -v
+idlj -fall Comptes.idl
+javac CompteImpl.java
+javac Serveur.java
+javac Client.java
+javac Client2.java
+javac Serveur2.java
+javac Client3.java

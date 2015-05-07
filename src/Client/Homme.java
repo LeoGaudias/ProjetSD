@@ -1,5 +1,6 @@
 package Client;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 public class Homme {
@@ -7,9 +8,31 @@ public class Homme {
 	private ArrayList<Integer> adn;
 	int longueur;
 	int largeur;
-	public Homme()
+	boolean mort;
+	Point depart;
+	Point arrivee;
+	
+	public Homme(Point dep,Point arr)
 	{
+		mort=false;
 		adn = new ArrayList<Integer>();
+		depart=dep;
+		arrivee=arr;
+	}
+	
+	public ArrayList<Integer> getAdn()
+	{
+		return adn;
+	}
+	
+	public void setAdn(ArrayList<Integer> a)
+	{
+		adn=a;
+	}
+	
+	public void changer1Adn(int pos,Integer val)
+	{
+		adn.set(pos, val);
 	}
 	
 	// retourne un un déplacement entre 0 et 7
@@ -61,6 +84,11 @@ public class Homme {
 					break;
 			}
 		}
-		return null;
+		return p;
+	}
+	
+	double distance_depart_arrive()
+	{
+		return Math.sqrt(Math.pow(arrivee.x-depart.x, 2)+Math.pow(arrivee.y-depart.y, 2));
 	}
 }

@@ -9,29 +9,31 @@ import Obstacle.Rectangle;;
 public class ServeurImpl extends UnicastRemoteObject implements Serveur
 {
 	private static final long serialVersionUID = 1L;
-	private int nb_carre;
+	private int nb_obstacle;
 	private int m_x;
 	private int m_y;
 	private int higher_x;
 	private int lower_x;
 	private int higher_y;
+	private int pas;
 
 	protected ServeurImpl() throws RemoteException 
 	{
 		super();
 	}
 	
-	protected ServeurImpl(int nb,int x,int y) throws RemoteException 
+	protected ServeurImpl(int nb,int x,int y,int p) throws RemoteException 
 	{
 		super();
-		this.setNb_carre(nb);
+		this.setNb_obstacle(nb);
 		this.setM_x(x);
 		this.setM_y(y);
 		// margin de 50 pixel pour la map en x et y
 		// pour que le départ ne soit pas collé à l'origine où au bord de la map
-		setHigher_x((getM_x()/2) - 50);
-		setLower_x(50);
-		setHigher_y((getM_y()/2) - 50);
+		this.setHigher_x((getM_x()/2) - 50);
+		this.setLower_x(50);
+		this.setHigher_y((getM_y()/2) - 50);
+		this.setPas(p);
 	}
 	
 	// fonctions RMI
@@ -39,42 +41,41 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	
 	public Rectangle[] getCarre() throws RemoteException
 	{
-		//TODO
-		Rectangle tab [] = new Rectangle[this.nb_carre];
-		int range_x_max = (getM_x()/6);
-		int range_y_max = (getM_y()/3);
+		Rectangle tab [] = new Rectangle[this.nb_obstacle];
+		int range_x_max = (getM_x()/12);
+		int range_y_max = (getM_y()/6);
 		
 		int x,y;
 		Point c1 = new Point();
 		Point c2 = new Point();
 		Point c3 = new Point();
 		Point c4 = new Point();
-		for(int i = 0 ; i < this.nb_carre; ++i)
+		for(int i = 0 ; i < this.nb_obstacle; ++i)
 		{
 			if(Math.random() <= 0.5)
 			{
-				x = (int)(Math.random() * range_x_max);
+				x = (int)(Math.random() * this.higher_x);
 				if(Math.random() <= 0.5)
 				{
-					y = (int)(Math.random() * range_y_max);
+					y = (int)(Math.random() * this.higher_y);
 				}
 				else
 				{
-					y = 0 - (int)(Math.random() * range_y_max);
+					y = 0 - (int)(Math.random() * this.higher_y);
 				}
 				c1.setLocation(x, y);
 				
 			}
 			else
 			{
-				x = 0 - (int)(Math.random() * range_x_max);
+				x = 0 - (int)(Math.random() * this.higher_x);
 				if(Math.random() <= 0.5)
 				{
-					y = (int)(Math.random() * range_y_max);
+					y = (int)(Math.random() * this.higher_y);
 				}
 				else
 				{
-					y = 0 - (int)(Math.random() * range_y_max);
+					y = 0 - (int)(Math.random() * this.higher_y);
 				}
 				c1.setLocation(x, y);
 			}
@@ -135,14 +136,14 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	// getter-setter
 	//-----------------------------------------------------
 
-	public int getNb_carre() 
+	public int getNb_obstacle() 
 	{
-		return this.nb_carre;
+		return this.nb_obstacle;
 	}
 	
-	public void setNb_carre(int nb_carre) 
+	public void setNb_obstacle(int nb) 
 	{
-		this.nb_carre = nb_carre;
+		this.nb_obstacle = nb;
 	}
 	
 	public int getM_x()
@@ -197,18 +198,31 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		this.higher_y = higher_y;
 	}
 	
+	public int getPas() throws RemoteException
+	{
+		return pas;
+	}
+
+	public void setPas(int pas) 
+	{
+		this.pas = pas;
+	}
+	
 	//-----------------------------------------------------
 	
 	public static void main(String[] args)
 	{
-		if(args.length != 4)
+		if(args.length != 5)
 		{
-			System.out.println("Usage : java ServerImpl <port> <nb Carre> <Size x> <Size y>");
+			System.out.println("Usage : java ServerImpl <port> <nb Obstacle> <Size x> <Size y> <taille pas>");
 			System.exit(0);
 		}
 		try
 		{
-			ServeurImpl serv = new ServeurImpl ();
+			ServeurImpl serv = new ServeurImpl(Integer.parseInt(args[1]),
+					Integer.parseInt(args[2]),
+					Integer.parseInt(args[3]),
+					Integer.parseInt(args[4]));
 			Naming.rebind("rmi://localhost:"+ args[0] + "/Serveur", serv);
 			System.out.println("Serveur en service");
 		}

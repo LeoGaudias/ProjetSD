@@ -16,8 +16,9 @@ public class Homme {
 	Point arrivee;
 	Point act;
 	ArrayList<Rectangle> obstacles;
+	int pas;
 	
-	public Homme(Point dep,Point arr, ArrayList<Rectangle> obs)
+	public Homme(Point dep,Point arr, ArrayList<Rectangle> obs,int pa)
 	{
 		mort=false;
 		adn = new ArrayList<Integer>();
@@ -25,6 +26,7 @@ public class Homme {
 		arrivee=arr;
 		act=depart;
 		obstacles=obs;
+		pas=pa;
 	}
 	
 	public ArrayList<Integer> getAdn()
@@ -60,32 +62,32 @@ public class Homme {
 				switch(deplacement)
 				{
 					case 0:
-						act.y++;
+						act.y+=pas;
 						break;
 					case 1:
-						act.x++;
-						act.y++;
+						act.x+=pas;
+						act.y+=pas;
 						break;
 					case 2:
-						act.x++;
+						act.x+=pas;
 						break;
 					case 3:
-						act.x++;
-						act.y--;
+						act.x+=pas;
+						act.y-=pas;
 						break;
 					case 4:
-						act.y--;
+						act.y-=pas;
 						break;
 					case 5:
-						act.x--;
-						act.y--;
+						act.x-=pas;
+						act.y-=pas;
 						break;
 					case 6:
-						act.x--;
+						act.x-=pas;
 						break;
 					case 7:
-						act.x--;
-						act.y++;
+						act.x-=pas;
+						act.y+=pas;
 						break;
 					default:
 						System.out.println("Erreur dans le switch, valeur incorrecte !");
@@ -120,28 +122,28 @@ public class Homme {
 			switch(adn.get(i))
 			{
 				case 0:
-					p.setLocation(p.x,++p.y);
+					p.setLocation(p.x,p.y+pas);
 					break;
 				case 1:
-					p.setLocation(++p.x,++p.y);
+					p.setLocation(p.x+pas,p.y+pas);
 					break;
 				case 2:
-					p.setLocation(++p.x,p.y);
+					p.setLocation(p.x+pas,p.y);
 					break;
 				case 3:
-					p.setLocation(++p.x,--p.y);
+					p.setLocation(p.x+pas,p.y-pas);
 					break;
 				case 4:
-					p.setLocation(p.x,--p.y);
+					p.setLocation(p.x,p.y-pas);
 					break;
 				case 5:
-					p.setLocation(--p.x,--p.y);
+					p.setLocation(p.x-pas,p.y-pas);
 					break;
 				case 6:
-					p.setLocation(--p.x,p.y);
+					p.setLocation(p.x-pas,p.y);
 					break;
 				case 7:
-					p.setLocation(--p.x,++p.y);
+					p.setLocation(p.x-pas,p.y+pas);
 					break;
 				default:
 					System.out.println("Erreur dans le switch, valeur incorrecte !");
@@ -154,31 +156,31 @@ public class Homme {
 	void setPositionCourante(Point p_actuel ,int i) {
 		switch(adn.get(i)) {
 		case 0:
-			p_actuel.setLocation(p_actuel.x,++p_actuel.y);
+			p_actuel.setLocation(p_actuel.x,p_actuel.y+pas);
 			break;
 		case 1:
-			p_actuel.setLocation(++p_actuel.x,++p_actuel.y);
+			p_actuel.setLocation(p_actuel.x+pas,p_actuel.y+pas);
 			break;
 		case 2:
-			p_actuel.setLocation(++p_actuel.x,p_actuel.y);
+			p_actuel.setLocation(p_actuel.x+pas,p_actuel.y);
 			break;
 		case 3:
-			p_actuel.setLocation(++p_actuel.x,--p_actuel.y);
+			p_actuel.setLocation(p_actuel.x+pas,p_actuel.y-pas);
 			break;
 		case 4:
-			p_actuel.setLocation(p_actuel.x,--p_actuel.y);
+			p_actuel.setLocation(p_actuel.x,p_actuel.y-pas);
 			break;
 		case 5:
-			p_actuel.setLocation(p_actuel.x--,--p_actuel.y);
+			p_actuel.setLocation(p_actuel.x-pas,p_actuel.y-pas);
 			break;
 		case 6:
-			p_actuel.setLocation(--p_actuel.x,p_actuel.y);
+			p_actuel.setLocation(p_actuel.x-pas,p_actuel.y);
 			break;
 		case 7:
-			p_actuel.setLocation(--p_actuel.x,++p_actuel.y);
+			p_actuel.setLocation(p_actuel.x-pas,p_actuel.y+pas);
 			break;
 		default:
-			p_actuel.setLocation(--p_actuel.x,--p_actuel.y);
+			System.out.println("Erreur dans le switch, valeur incorrecte !");
 			break;
 		}
 	

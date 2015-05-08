@@ -42,11 +42,46 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		//TODO
 		Rectangle tab [] = new Rectangle[this.nb_carre];
 		int range_x_max = (getM_x()/6);
+		int range_y_max = (getM_y()/3);
 		
-		int c1,c2,c3,c4;
+		int x,y;
+		Point c1 = new Point();
+		Point c2 = new Point();
+		Point c3 = new Point();
+		Point c4 = new Point();
 		for(int i = 0 ; i < this.nb_carre; ++i)
 		{
-			tab[i] = new Rectangle();
+			if(Math.random() <= 0.5)
+			{
+				x = (int)(Math.random() * range_x_max);
+				if(Math.random() <= 0.5)
+				{
+					y = (int)(Math.random() * range_y_max);
+				}
+				else
+				{
+					y = 0 - (int)(Math.random() * range_y_max);
+				}
+				c1.setLocation(x, y);
+				
+			}
+			else
+			{
+				x = 0 - (int)(Math.random() * range_x_max);
+				if(Math.random() <= 0.5)
+				{
+					y = (int)(Math.random() * range_y_max);
+				}
+				else
+				{
+					y = 0 - (int)(Math.random() * range_y_max);
+				}
+				c1.setLocation(x, y);
+			}
+			c2.setLocation((int)c1.getX() + (int)(Math.random() * range_x_max) , (int)c1.getY());
+			c3.setLocation((int)c2.getX() , (int)c1.getY() + (int)(Math.random() * range_y_max));
+			c4.setLocation((int)c1.getX(), (int)c3.getY());
+			tab[i] = new Rectangle(c1,c2,c3,c4);
 		}
 		
 		return tab;
@@ -57,10 +92,6 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	{
 		Point p = new Point();
 		int x = 0, y = 0;
-		// margin de 50 pixel pour la map en x et y
-		// pour que le départ ne soit pas collé à l'origine où au bord de la map
-		
-		
 		x -= (int)(Math.random() * (higher_x-lower_x)) + lower_x;
 		
 		if(Math.random() <= 0.5)
@@ -81,9 +112,6 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	{
 		Point p = new Point();
 		int x = 0, y = 0;
-		
-		// margin de 50 pixel pour la map en x et y
-		// pour que l'arrivée ne soit pas collé à l'origine où au bord de la map 
 		int higher_x = (getM_x()/2) - 50;
 		int lower_x = 50;
 		int higher_y = (getM_y()/2) - 50;
@@ -124,6 +152,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 
 	public void setM_x(int m_x)
 	{
+		setHigher_x((m_x/2) - 50);
 		this.m_x = m_x;
 	}
 
@@ -134,6 +163,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 
 	public void setM_y(int m_y)
 	{
+		setHigher_y((m_y/2) - 50);
 		this.m_y = m_y;
 	}
 	

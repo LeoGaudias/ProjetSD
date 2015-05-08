@@ -6,15 +6,21 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
+import Obstacle.Rectangle;
+
 public class Client
 {
 	ArrayList<Homme> list;
+	ArrayList<Rectangle> obstacles;
 	
 	public Client()
 	{
 		list=new ArrayList<Homme>();
-		list.add(new Homme(new Point(0,0),new Point(15,15)));
-		list.add(new Homme(new Point(0,0),new Point(15,15)));
+		list.add(new Homme(new Point(0,0),new Point(15,15),obstacles));
+		list.add(new Homme(new Point(0,0),new Point(15,15),obstacles));
+		
+		obstacles=new ArrayList<Rectangle>();
+		obstacles.add(new Rectangle(new Point(0,0),new Point(10,0),new Point(10,-10),new Point(0,-10)));
 	}
 	
 	ArrayList<Homme> classement() // à modifier pour prendre en compte la collision
@@ -111,7 +117,7 @@ public class Client
 	
 	Homme croissement(Homme h1,Homme h2)
 	{
-		Homme res=new Homme(h1.depart,h1.arrivee);
+		Homme res=new Homme(h1.depart,h1.arrivee,h1.obstacles);
 		ArrayList<Integer> adn=new ArrayList<Integer>();
 		
 		int coupe=(int)Math.random()*100;
@@ -158,6 +164,7 @@ public class Client
 	
 	public static void main(String[] args)
 	{
+		new Client();
 		// TODO implémantation CORBA
 		JFrame jf = new MainFrame();
 		jf.setLocation(100, 100);

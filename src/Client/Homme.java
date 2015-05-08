@@ -2,6 +2,9 @@ package Client;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import Obstacle.Rectangle;
 
 public class Homme {
 
@@ -11,13 +14,17 @@ public class Homme {
 	boolean mort;
 	Point depart;
 	Point arrivee;
+	Point act;
+	ArrayList<Rectangle> obstacles;
 	
-	public Homme(Point dep,Point arr)
+	public Homme(Point dep,Point arr, ArrayList<Rectangle> obs)
 	{
 		mort=false;
 		adn = new ArrayList<Integer>();
 		depart=dep;
 		arrivee=arr;
+		act=depart;
+		obs=obstacles;
 	}
 	
 	public ArrayList<Integer> getAdn()
@@ -47,14 +54,71 @@ public class Homme {
 	{
 		for(int i = 0; i < taille; ++i)
 		{
-			adn.add(deplacementRandom());
+			if(mort==false && act!=arrivee)
+			{
+				int deplacement=deplacementRandom();
+				switch(deplacement)
+				{
+					case 0:
+						act.y++;
+						break;
+					case 1:
+						act.x++;
+						act.y++;
+						break;
+					case 2:
+						act.x++;
+						break;
+					case 3:
+						act.x++;
+						act.y--;
+						break;
+					case 4:
+						act.y--;
+						break;
+					case 5:
+						act.x--;
+						act.y--;
+						break;
+					case 6:
+						act.x--;
+						break;
+					case 7:
+						act.x--;
+						act.y++;
+						break;
+					default:
+						System.out.println("Erreur dans le switch, valeur incorrecte !");
+						break;
+				}
+				
+				Iterator<Rectangle> it=obstacles.iterator();
+				while(it.hasNext())
+				{
+					if(it.next().isInside(act))
+					{
+						System.out.println("Collision : you died !");
+						mort=true;
+						break;
+					}
+				}
+				
+				adn.add(deplacementRandom());
+				
+				if(act==arrivee)
+				{
+					System.out.println("Vous êtes arrivé à destionation !! bien :o");
+					break;
+				}
+			}
 		}
 	}
 
 	Point calculDestinationFinale() {
 		Point p = new Point(0,this.largeur/2);
 		for(int i=0; i < adn.size(); i++) {
-			switch(adn.get(i)) {
+			switch(adn.get(i))
+			{
 				case 0:
 					p.setLocation(p.x,p.y++);
 					break;
@@ -80,7 +144,7 @@ public class Homme {
 					p.setLocation(p.x--,p.y++);
 					break;
 				default:
-					p.setLocation(p.x--,p.y--);
+					System.out.println("Erreur dans le switch, valeur incorrecte !");
 					break;
 			}
 		}

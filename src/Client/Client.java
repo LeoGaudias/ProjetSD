@@ -3,6 +3,7 @@ package Client;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -166,7 +167,24 @@ public class Client
 	{
 		new Client();
 		// TODO implémantation CORBA
-		JFrame jf = new MainFrame();
+		//récupérer du serveur la size
+		int width = 600; //tmp
+		int height = 600; //tmp
+		int nb_rectangles = 4; //tmp
+		ArrayList<Rectangle> tab_rectangles = new ArrayList<Rectangle>();
+		
+		Random rand= new Random();
+		//tmp creation random rectangle 
+		for(int i=0; i<nb_rectangles; i++) {
+			rand = new Random();
+			int xi= rand.nextInt(width*2) -width;
+			int yi= rand.nextInt(height*2) -height;
+			tab_rectangles.add(new Rectangle(new Point(xi-50,yi+50), new Point(xi+50,yi+50), new Point(xi+50,yi-50), new Point(xi-50,yi-50)));
+		}
+		
+		Homme h = new Homme(new Point(-width,0), new Point(width,0), tab_rectangles); //tmp
+		h.attributionAdn(width*2+height*2);
+		JFrame jf = new MainFrame(width, height,nb_rectangles,h);
 		jf.setLocation(100, 100);
 		jf.pack();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

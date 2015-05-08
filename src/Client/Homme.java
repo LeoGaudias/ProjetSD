@@ -24,7 +24,7 @@ public class Homme {
 		depart=dep;
 		arrivee=arr;
 		act=depart;
-		obs=obstacles;
+		obstacles=obs;
 	}
 	
 	public ArrayList<Integer> getAdn()
@@ -120,28 +120,28 @@ public class Homme {
 			switch(adn.get(i))
 			{
 				case 0:
-					p.setLocation(p.x,p.y++);
+					p.setLocation(p.x,++p.y);
 					break;
 				case 1:
-					p.setLocation(p.x++,p.y++);
+					p.setLocation(++p.x,++p.y);
 					break;
 				case 2:
-					p.setLocation(p.x++,p.y);
+					p.setLocation(++p.x,p.y);
 					break;
 				case 3:
-					p.setLocation(p.x++,p.y--);
+					p.setLocation(++p.x,--p.y);
 					break;
 				case 4:
-					p.setLocation(p.x,p.y--);
+					p.setLocation(p.x,--p.y);
 					break;
 				case 5:
-					p.setLocation(p.x--,p.y--);
+					p.setLocation(--p.x,--p.y);
 					break;
 				case 6:
-					p.setLocation(p.x--,p.y);
+					p.setLocation(--p.x,p.y);
 					break;
 				case 7:
-					p.setLocation(p.x--,p.y++);
+					p.setLocation(--p.x,++p.y);
 					break;
 				default:
 					System.out.println("Erreur dans le switch, valeur incorrecte !");
@@ -149,6 +149,39 @@ public class Homme {
 			}
 		}
 		return p;
+	}
+	
+	void setPositionCourante(Point p_actuel ,int i) {
+		switch(adn.get(i)) {
+		case 0:
+			p_actuel.setLocation(p_actuel.x,++p_actuel.y);
+			break;
+		case 1:
+			p_actuel.setLocation(++p_actuel.x,++p_actuel.y);
+			break;
+		case 2:
+			p_actuel.setLocation(++p_actuel.x,p_actuel.y);
+			break;
+		case 3:
+			p_actuel.setLocation(++p_actuel.x,--p_actuel.y);
+			break;
+		case 4:
+			p_actuel.setLocation(p_actuel.x,--p_actuel.y);
+			break;
+		case 5:
+			p_actuel.setLocation(p_actuel.x--,--p_actuel.y);
+			break;
+		case 6:
+			p_actuel.setLocation(--p_actuel.x,p_actuel.y);
+			break;
+		case 7:
+			p_actuel.setLocation(--p_actuel.x,++p_actuel.y);
+			break;
+		default:
+			p_actuel.setLocation(--p_actuel.x,--p_actuel.y);
+			break;
+		}
+	
 	}
 	
 	double distance_depart_arrive()

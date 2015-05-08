@@ -1,22 +1,33 @@
 package Client;
 
 import java.awt.Dimension;
+import java.awt.Point;
+import java.util.Random;
 
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
+import javax.media.opengl.*;
+import javax.media.opengl.awt.GLCanvas;
 //import com.jogamp.opengl.glu.GLU;
+import Obstacle.Rectangle;
 
 public class Maps implements GLEventListener {
 	
 	public GLCanvas canvas;
 	
-	public Maps()
+	static Homme h;
+	boolean isinside = false;
+	int width;
+	int height; 
+	public Maps(int w, int he, int nb_rectangle,Homme homme)
 	{
 		canvas = new GLCanvas();
 		canvas.addGLEventListener(this);
-		canvas.setPreferredSize(new Dimension(800,600));
+		canvas.setPreferredSize(new Dimension(w,he));
+
+		width = w;
+		height = he;
+	
+		
+		h = homme;
 	}
 	
 	void drawRepere(GL2 gl)
@@ -43,12 +54,39 @@ public class Maps implements GLEventListener {
 	
 	void drawObstacle(GL2 gl)
 	{
-		//TODO
+		 gl.glBegin(GL2.GL_QUADS);
+		 
+		 for(int i=0; i<this.h.obstacles.size(); i++) {
+			 	gl.glVertex3d((double)h.obstacles.get(i).getCoord(0).x/width, (double)h.obstacles.get(i).getCoord(0).y/height, 0.);  // Top left
+				gl.glVertex3d((double)h.obstacles.get(i).getCoord(1).x/width, (double)h.obstacles.get(i).getCoord(1).y/height, 0);  // Top right
+				gl.glVertex3d((double)h.obstacles.get(i).getCoord(2).x/width, (double)h.obstacles.get(i).getCoord(2).y/height, 0);  // Bottom right
+				gl.glVertex3d((double)h.obstacles.get(i).getCoord(3).x/width, (double)h.obstacles.get(i).getCoord(3).y/height, 0);
+		 }
+		 gl.glEnd();
 	}
 	
 	void drawDeplacement(GL2 gl, Homme h, int tailleDeplacement)
 	{
-		//TODO
+		gl.glBegin(GL2.GL_LINES);
+		 Point p = new Point(-600,0); //point de départ
+		 gl.glVertex3d((double)p.x/width, (double)p.y/height, 0);
+		 for(int i=0; i<h.getAdn().size(); i++) {
+			 
+			 h.setPositionCourante(p, i);
+			/* if(!isinside) {
+					for(int j=0; j<h.obstacles.size(); j++) {
+						if(tab_rectangles[j].isInside(p)) {
+							System.out.println("collision");
+							h.mort = true;
+							isinside = true;
+							break;
+						}
+					}*/
+					gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
+				//}
+		 }
+		// isinside = false;
+		 gl.glEnd();
 	}
 
 	@Override
@@ -72,7 +110,8 @@ public class Maps implements GLEventListener {
 		// ...
 
 		drawRepere(gl);
-
+		drawObstacle(gl);
+		drawDeplacement(gl,h,16);
 		//glutSwapBuffers();
 	}
 

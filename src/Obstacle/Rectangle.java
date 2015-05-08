@@ -64,6 +64,10 @@ public class Rectangle
 	{
 		return coordonnees;
 	}
+	
+	public Point getCoord(int i) {
+		return coordonnees[i];
+	}
 
 	public void setCoordonnees(Point c1,Point c2,Point c3, Point c4)
 	{

@@ -2,26 +2,47 @@ package Client;
 
 import java.awt.BorderLayout;
 import java.awt.Point;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Random;
-
 import javax.swing.JFrame;
 
 import Obstacle.Rectangle;
+import Server.Serveur;
 
 public class Client
 {
-	ArrayList<Homme> list;
+	int width;
+	int height;
+	int pas;
+	Point depart;
+	Point arrivee;
 	ArrayList<Rectangle> obstacles;
+	ArrayList<Homme> list;
+	int nb_indiv;
 	
-	public Client()
+	public Client(int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv)
 	{
-		list=new ArrayList<Homme>();
-		list.add(new Homme(new Point(0,0),new Point(15,15),obstacles));
-		list.add(new Homme(new Point(0,0),new Point(15,15),obstacles));
-		
-		obstacles=new ArrayList<Rectangle>();
-		obstacles.add(new Rectangle(new Point(0,0),new Point(10,0),new Point(10,-10),new Point(0,-10)));
+		this.width = w;
+		this.height = h;
+		this.pas = p;
+		this.depart = dep;
+		this.arrivee = arri;
+		this.obstacles = rec;
+		this.nb_indiv = indiv;
+		this.list = initListHomme(dep,arri,rec,nb_indiv);
+	}
+	
+	ArrayList<Homme> initListHomme(Point dep,Point arri,ArrayList<Rectangle> rec,int nb_indiv)
+	{
+		ArrayList<Homme> res = new ArrayList<Homme>();
+		for (int i = 0; i < nb_indiv; i++)
+		{
+			res.add(new Homme(dep,arri,rec,nb_indiv));
+		}
+		return res;
 	}
 	
 	ArrayList<Homme> classement() // à modifier pour prendre en compte la collision
@@ -118,7 +139,7 @@ public class Client
 	
 	Homme croissement(Homme h1,Homme h2)
 	{
-		Homme res=new Homme(h1.depart,h1.arrivee,h1.obstacles);
+		Homme res=new Homme(h1.depart,h1.arrivee,h1.obstacles,h1.pas);
 		ArrayList<Integer> adn=new ArrayList<Integer>();
 		
 		int coupe=(int)Math.random()*100;
@@ -165,30 +186,26 @@ public class Client
 	
 	public static void main(String[] args)
 	{
-		new Client();
-		// TODO implémantation CORBA
-		//récupérer du serveur la size
-		int width = 600; //tmp
-		int height = 600; //tmp
-		int nb_rectangles = 4; //tmp
-		ArrayList<Rectangle> tab_rectangles = new ArrayList<Rectangle>();
-		
-		Random rand= new Random();
-		//tmp creation random rectangle 
-		for(int i=0; i<nb_rectangles; i++) {
-			rand = new Random();
-			int xi= rand.nextInt(width*2) -width;
-			int yi= rand.nextInt(height*2) -height;
-			tab_rectangles.add(new Rectangle(new Point(xi-50,yi+50), new Point(xi+50,yi+50), new Point(xi+50,yi-50), new Point(xi-50,yi-50)));
+		try
+		{
+			Serveur serv = (Serveur) Naming.lookup("//127.0.0.1:5000/Serveur");
+			Client cl = new Client(serv.getM_x(),serv.getM_y(),
+						serv.getPas(),serv.getDepart(),
+						serv.getArrivee(),serv.getRectangle(),
+						serv.getNb_individus());
+			//Exemple à Marine à changer
+			Homme h = new Homme(new Point(-cl.width,0), new Point(cl.width,0), cl.obstacles,cl.pas);
+			h.attributionAdn(cl.width*2+cl.height*2);
+			
+			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),h);
+			jf.setLocation(100, 100);
+			jf.pack();
+			jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			jf.setLayout(new BorderLayout());
+			jf.setVisible(true);
 		}
-		
-		Homme h = new Homme(new Point(-width,0), new Point(width,0), tab_rectangles); //tmp
-		h.attributionAdn(width*2+height*2);
-		JFrame jf = new MainFrame(width, height,nb_rectangles,h);
-		jf.setLocation(100, 100);
-		jf.pack();
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jf.setLayout(new BorderLayout());
-		jf.setVisible(true);
+		catch (NotBoundException re) { System.out.println(re) ; }
+		catch (RemoteException re) { System.out.println(re) ; }
+		catch (MalformedURLException e) { System.out.println(e) ; }
 	}
 }

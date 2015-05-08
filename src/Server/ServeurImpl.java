@@ -3,6 +3,7 @@ import java.awt.Point;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 import Obstacle.Rectangle;;
 
@@ -16,13 +17,14 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	private int lower_x;
 	private int higher_y;
 	private int pas;
+	private int nb_individus;
 
 	protected ServeurImpl() throws RemoteException 
 	{
 		super();
 	}
 	
-	protected ServeurImpl(int nb,int x,int y,int p) throws RemoteException 
+	protected ServeurImpl(int nb,int x,int y,int p,int indiv) throws RemoteException 
 	{
 		super();
 		this.setNb_obstacle(nb);
@@ -34,14 +36,15 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		this.setLower_x(50);
 		this.setHigher_y((getM_y()/2) - 50);
 		this.setPas(p);
+		this.setNb_individus(indiv);
 	}
 	
 	// fonctions RMI
 	//-----------------------------------------------------
 	
-	public Rectangle[] getCarre() throws RemoteException
+	public ArrayList<Rectangle> getRectangle() throws RemoteException
 	{
-		Rectangle tab [] = new Rectangle[this.nb_obstacle];
+		ArrayList<Rectangle> tab = new ArrayList<Rectangle>();
 		int range_x_max = (getM_x()/12);
 		int range_y_max = (getM_y()/6);
 		
@@ -82,9 +85,8 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 			c2.setLocation((int)c1.getX() + (int)(Math.random() * range_x_max) , (int)c1.getY());
 			c3.setLocation((int)c2.getX() , (int)c1.getY() + (int)(Math.random() * range_y_max));
 			c4.setLocation((int)c1.getX(), (int)c3.getY());
-			tab[i] = new Rectangle(c1,c2,c3,c4);
+			tab.add(new Rectangle(c1,c2,c3,c4));
 		}
-		
 		return tab;
 	}
 	
@@ -132,34 +134,44 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		return p;
 	}
 	
-	//-----------------------------------------------------
-	// getter-setter
-	//-----------------------------------------------------
-
-	public int getNb_obstacle() 
+	public int getNb_obstacle() throws RemoteException
 	{
 		return this.nb_obstacle;
 	}
 	
+	public int getM_x() throws RemoteException
+	{
+		return m_x;
+	}
+	
+	public int getM_y() throws RemoteException
+	{
+		return m_y;
+	}
+	
+	public int getPas() throws RemoteException
+	{
+		return pas;
+	}
+	
+	public int getNb_individus() throws RemoteException
+	{
+		return nb_individus;
+	}
+	
+	//-----------------------------------------------------
+	// getter-setter
+	//-----------------------------------------------------
+	
 	public void setNb_obstacle(int nb) 
 	{
 		this.nb_obstacle = nb;
-	}
-	
-	public int getM_x()
-	{
-		return m_x;
 	}
 
 	public void setM_x(int m_x)
 	{
 		setHigher_x((m_x/2) - 50);
 		this.m_x = m_x;
-	}
-
-	public int getM_y()
-	{
-		return m_y;
 	}
 
 	public void setM_y(int m_y)
@@ -197,24 +209,25 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	{
 		this.higher_y = higher_y;
 	}
-	
-	public int getPas() throws RemoteException
-	{
-		return pas;
-	}
 
 	public void setPas(int pas) 
 	{
 		this.pas = pas;
 	}
+
+	public void setNb_individus(int nb_individus)
+	{
+		this.nb_individus = nb_individus;
+	}	
 	
 	//-----------------------------------------------------
 	
 	public static void main(String[] args)
 	{
-		if(args.length != 5)
+		if(args.length != 6)
 		{
-			System.out.println("Usage : java ServerImpl <port> <nb Obstacle> <Size x> <Size y> <taille pas>");
+			System.out.println("Usage : java ServerImpl <port> <nb Obstacle> <Size x>"
+					+ "<Size y> <taille pas> <nb individu>");
 			System.exit(0);
 		}
 		try
@@ -222,7 +235,8 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 			ServeurImpl serv = new ServeurImpl(Integer.parseInt(args[1]),
 					Integer.parseInt(args[2]),
 					Integer.parseInt(args[3]),
-					Integer.parseInt(args[4]));
+					Integer.parseInt(args[4]),
+					Integer.parseInt(args[5]));
 			Naming.rebind("rmi://localhost:"+ args[0] + "/Serveur", serv);
 			System.out.println("Serveur en service");
 		}
@@ -231,5 +245,5 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 			System.out.println("ServeurImpl : " + e.getMessage());
 			e.printStackTrace();
 		}
-	}	
+	}
 }

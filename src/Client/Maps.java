@@ -2,9 +2,10 @@ package Client;
 
 import java.awt.Dimension;
 import java.awt.Point;
-
-import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
 
 public class Maps implements GLEventListener {
 	
@@ -53,7 +54,7 @@ public class Maps implements GLEventListener {
 	{
 		 gl.glBegin(GL2.GL_QUADS);
 		 
-		 for(int i=0; i<h.obstacles.size(); i++) {
+		 for(int i=0; i< h.obstacles.size(); i++) {
 			 	gl.glVertex3d((double)h.obstacles.get(i).getCoord(0).x/width, (double)h.obstacles.get(i).getCoord(0).y/height, 0.);  // Top left
 				gl.glVertex3d((double)h.obstacles.get(i).getCoord(1).x/width, (double)h.obstacles.get(i).getCoord(1).y/height, 0);  // Top right
 				gl.glVertex3d((double)h.obstacles.get(i).getCoord(2).x/width, (double)h.obstacles.get(i).getCoord(2).y/height, 0);  // Bottom right

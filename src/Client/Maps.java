@@ -2,6 +2,9 @@ package Client;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Random;
+
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -16,6 +19,7 @@ public class Maps implements GLEventListener {
 	int width;
 	int height; 
 	public Maps(int w, int he, int nb_rectangle,ArrayList<Homme> l_h)
+	{
 		canvas = new GLCanvas();
 		canvas.addGLEventListener(this);
 		canvas.setPreferredSize(new Dimension(w,he));

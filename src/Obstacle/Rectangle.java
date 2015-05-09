@@ -1,9 +1,11 @@
 package Obstacle;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 public class Rectangle implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private Point coordonnees[] = new Point[4];
 	
 	public Rectangle(){}

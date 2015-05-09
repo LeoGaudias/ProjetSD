@@ -18,6 +18,9 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	private int higher_y;
 	private int pas;
 	private int nb_individus;
+	private ArrayList<Rectangle> listRect;
+	private Point depart;
+	private Point arrivee;
 
 	protected ServeurImpl() throws RemoteException 
 	{
@@ -37,24 +40,39 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		this.setHigher_y((getM_y()) - 50);
 		this.setPas(p);
 		this.setNb_individus(indiv);
+		this.setListRect(createRectangle());
+		this.setDepart(createDepart());
+		this.setArrivee(createArrivee());
 	}
 	
-	// fonctions RMI
+	//-----------------------------------------------------
+	// fonctions création
 	//-----------------------------------------------------
 	
-	public ArrayList<Rectangle> getRectangle() throws RemoteException
+	public ArrayList<Rectangle> createRectangle()
 	{
 		ArrayList<Rectangle> tab = new ArrayList<Rectangle>();
-		int range_x_max = (getM_x()/12);
-		int range_y_max = (getM_y()/6);
+		int range_x_max = 0;
+		int range_y_max = 0;
+		try 
+		{
+			range_x_max = (getM_x()/12);
+			range_y_max = (getM_y()/6);
+		} 
+		catch (RemoteException e)
+		{
+			e.printStackTrace();
+		}
 		
 		int x,y;
-		Point c1 = new Point();
-		Point c2 = new Point();
-		Point c3 = new Point();
-		Point c4 = new Point();
+		Point c1,c2,c3,c4;;
+		
 		for(int i = 0 ; i < this.nb_obstacle; ++i)
 		{
+			c1 = new Point();
+			c2 = new Point();
+			c3 = new Point();
+			c4 = new Point();
 			if(Math.random() <= 0.5)
 			{
 				x = (int)(Math.random() * this.higher_x);
@@ -91,19 +109,20 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	}
 	
 	// depart à gauche de la map
-	public Point getDepart() throws RemoteException
+	public Point createDepart()
 	{
+		
 		Point p = new Point();
 		int x = 0, y = 0;
-		x -= (int)(Math.random() * (higher_x-lower_x)) + lower_x;
+		x -= (int)(Math.random() * (getHigher_x()-getLower_x())) + getLower_x();
 		
 		if(Math.random() <= 0.5)
 		{
-			y += (int)(Math.random() * higher_y);
+			y += (int)(Math.random() * getHigher_y());
 		}
 		else
 		{
-			y -= (int)(Math.random() * higher_y);
+			y -= (int)(Math.random() * getHigher_y());
 		}
 		
 		p.setLocation(x, y);
@@ -111,13 +130,24 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	}
 	
 	// arrivee à droite de la map
-	public Point getArrivee() throws RemoteException
+	public Point createArrivee()
 	{
 		Point p = new Point();
 		int x = 0, y = 0;
-		int higher_x = (getM_x()/2) - 50;
+		int higher_x = 0;
+		int higher_y = 0;
+		try 
+		{
+			higher_x = (getM_x()/2) - 50;
+			higher_y = (getM_y()/2) - 50;
+		} 
+		catch (RemoteException e) 
+		{
+			e.printStackTrace();
+		}
+		
 		int lower_x = 50;
-		int higher_y = (getM_y()/2) - 50;
+		
 		
 		x += (int)(Math.random() * (higher_x-lower_x)) + lower_x;
 		
@@ -133,6 +163,10 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		p.setLocation(x, y);
 		return p;
 	}
+	
+	//-----------------------------------------------------
+	// fonctions RMI
+	//-----------------------------------------------------
 	
 	public int getNb_obstacle() throws RemoteException
 	{
@@ -157,6 +191,21 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	public int getNb_individus() throws RemoteException
 	{
 		return nb_individus;
+	}
+	
+	public ArrayList<Rectangle> getListRect() throws RemoteException
+	{
+		return listRect;
+	}
+	
+	public Point getDepart() throws RemoteException
+	{
+		return depart;
+	}
+	
+	public Point getArrivee() throws RemoteException
+	{
+		return arrivee;
 	}
 	
 	//-----------------------------------------------------
@@ -218,7 +267,22 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	public void setNb_individus(int nb_individus)
 	{
 		this.nb_individus = nb_individus;
-	}	
+	}
+
+	public void setListRect(ArrayList<Rectangle> listRect)
+	{
+		this.listRect = listRect;
+	}
+
+	public void setDepart(Point depart)
+	{
+		this.depart = depart;
+	}
+
+	public void setArrivee(Point arriver)
+	{
+		this.arrivee = arriver;
+	}
 	
 	//-----------------------------------------------------
 	

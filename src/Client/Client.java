@@ -20,7 +20,7 @@ public class Client
 	Point depart;
 	Point arrivee;
 	ArrayList<Rectangle> obstacles;
-	static ArrayList<Homme> list;
+	ArrayList<Homme> list;
 	int nb_indiv;
 	
 	public Client(int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv)
@@ -191,10 +191,10 @@ public class Client
 			Serveur serv = (Serveur) Naming.lookup("//127.0.0.1:5000/Serveur");
 			Client cl = new Client(serv.getM_x(),serv.getM_y(),
 						serv.getPas(),serv.getDepart(),
-						serv.getArrivee(),serv.getRectangle(),
+						serv.getArrivee(),serv.getListRect(),
 						serv.getNb_individus());
 			
-			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),list);
+			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),cl.list);
 			jf.setLocation(100, 100);
 			jf.pack();
 			jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

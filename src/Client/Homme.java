@@ -59,7 +59,7 @@ public class Homme {
 	{
 		for(int i = 0; i < taille; ++i)
 		{
-			if(mort==false && act!=arrivee)
+			if(mort==false && !act.equals(arrivee))
 			{
 				int deplacement=deplacementRandom();
 				switch(deplacement)
@@ -108,7 +108,7 @@ public class Homme {
 					}
 				}
 				
-				if(act.x <=longueur & act.x >=-longueur && act.y <=largeur && act.y >=-largeur) {
+				if(act.x <=longueur && act.x >=-longueur && act.y <=largeur && act.y >=-largeur) {
 					adn.add(deplacementRandom());
 				}
 				else {
@@ -118,7 +118,7 @@ public class Homme {
 				
 				if(act==arrivee)
 				{
-					System.out.println("Vous êtes arrivé à destionation !! bien :o");
+					System.out.println("Vous êtes arrivés à destionation !! bien :o");
 					break;
 				}
 			}
@@ -199,5 +199,15 @@ public class Homme {
 	double distance_depart_arrive()
 	{
 		return Math.sqrt(Math.pow(arrivee.x-depart.x, 2)+Math.pow(arrivee.y-depart.y, 2));
+	}
+	
+	double distance_actuel_arrive()
+	{
+		return Math.sqrt(Math.pow(arrivee.x-act.x, 2)+Math.pow(arrivee.y-depart.y, 2));
+	}
+
+	double distance_actuel_arrive()
+	{
+		return Math.sqrt(Math.pow(arrivee.x-act.x, 2)+Math.pow(arrivee.y-depart.y, 2));
 	}
 }

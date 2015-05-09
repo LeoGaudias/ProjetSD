@@ -2,7 +2,7 @@ package Obstacle;
 
 import java.awt.Point;
 
-public class Rectangle 
+public class Rectangle implements Serializable
 {
 	private Point coordonnees[] = new Point[4];
 	

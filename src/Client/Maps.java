@@ -11,12 +11,11 @@ public class Maps implements GLEventListener {
 	
 	public GLCanvas canvas;
 	
-	static Homme h;
+	ArrayList<Homme> list_hommes;
 	boolean isinside = false;
 	int width;
 	int height; 
-	public Maps(int w, int he, int nb_rectangle,Homme homme)
-	{
+	public Maps(int w, int he, int nb_rectangle,ArrayList<Homme> l_h)
 		canvas = new GLCanvas();
 		canvas.addGLEventListener(this);
 		canvas.setPreferredSize(new Dimension(w,he));
@@ -25,7 +24,7 @@ public class Maps implements GLEventListener {
 		height = he;
 	
 		
-		h = homme;
+		list_hommes = l_h;
 	}
 	
 	void drawRepere(GL2 gl)
@@ -54,37 +53,36 @@ public class Maps implements GLEventListener {
 	{
 		 gl.glBegin(GL2.GL_QUADS);
 		 
-		 for(int i=0; i< h.obstacles.size(); i++) {
-			 	gl.glVertex3d((double)h.obstacles.get(i).getCoord(0).x/width, (double)h.obstacles.get(i).getCoord(0).y/height, 0.);  // Top left
-				gl.glVertex3d((double)h.obstacles.get(i).getCoord(1).x/width, (double)h.obstacles.get(i).getCoord(1).y/height, 0);  // Top right
-				gl.glVertex3d((double)h.obstacles.get(i).getCoord(2).x/width, (double)h.obstacles.get(i).getCoord(2).y/height, 0);  // Bottom right
-				gl.glVertex3d((double)h.obstacles.get(i).getCoord(3).x/width, (double)h.obstacles.get(i).getCoord(3).y/height, 0);
+		 for(int i=0; i< list_hommes.get(0).obstacles.size(); i++) {
+			 	gl.glVertex3d((double)list_hommes.get(0).obstacles.get(i).getCoord(0).x/width, (double)list_hommes.get(0).obstacles.get(i).getCoord(0).y/height, 0.);  // Top left
+				gl.glVertex3d((double)list_hommes.get(0).obstacles.get(i).getCoord(1).x/width, (double)list_hommes.get(0).obstacles.get(i).getCoord(1).y/height, 0);  // Top right
+				gl.glVertex3d((double)list_hommes.get(0).obstacles.get(i).getCoord(2).x/width, (double)list_hommes.get(0).obstacles.get(i).getCoord(2).y/height, 0);  // Bottom right
+				gl.glVertex3d((double)list_hommes.get(0).obstacles.get(i).getCoord(3).x/width, (double)list_hommes.get(0).obstacles.get(i).getCoord(3).y/height, 0);
 		 }
 		 gl.glEnd();
 	}
 	
-	void drawDeplacement(GL2 gl, Homme h, int tailleDeplacement)
+	void drawDeplacement(GL2 gl, int tailleDeplacement)
 	{
-		gl.glBegin(GL2.GL_LINES);
-		 Point p = new Point(-600,0); //point de départ
-		 gl.glVertex3d((double)p.x/width, (double)p.y/height, 0);
-		 for(int i=0; i<h.getAdn().size(); i++) {
-			 
-			 h.setPositionCourante(p, i);
-			/* if(!isinside) {
-					for(int j=0; j<h.obstacles.size(); j++) {
-						if(tab_rectangles[j].isInside(p)) {
-							System.out.println("collision");
-							h.mort = true;
-							isinside = true;
-							break;
-						}
-					}*/
-					gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
-				//}
-		 }
-		// isinside = false;
-		 gl.glEnd();
+		for(int i=0; i<list_hommes.size(); i++) {
+			gl.glBegin(GL2.GL_LINE_STRIP);
+			Random randcolor = new Random();
+			gl.glColor3f(randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f);
+		
+			Point p = new Point(list_hommes.get(i).depart.x,list_hommes.get(i).depart.y); //point de dÃ©part
+			gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
+			int modulo = 1;
+			 for(int j=0; j<list_hommes.get(i).getAdn().size(); j++) {
+				 p = list_hommes.get(i).setPositionCourante(p, j);
+				 if(modulo%(list_hommes.get(i).getAdn().size()/10)==0) {
+			
+					 gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
+				 }
+				 modulo++;
+				
+			 }
+			 gl.glEnd();
+		}
 	}
 
 	@Override
@@ -109,7 +107,7 @@ public class Maps implements GLEventListener {
 
 		drawRepere(gl);
 		drawObstacle(gl);
-		drawDeplacement(gl,h,16);
+		drawDeplacement(gl,16);
 		//glutSwapBuffers();
 	}
 

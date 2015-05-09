@@ -32,9 +32,9 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		this.setM_y(y);
 		// margin de 50 pixel pour la map en x et y
 		// pour que le départ ne soit pas collé à l'origine où au bord de la map
-		this.setHigher_x((getM_x()/2) - 50);
+		this.setHigher_x((getM_x()) - 50);
 		this.setLower_x(50);
-		this.setHigher_y((getM_y()/2) - 50);
+		this.setHigher_y((getM_y()) - 50);
 		this.setPas(p);
 		this.setNb_individus(indiv);
 	}

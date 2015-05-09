@@ -20,7 +20,7 @@ public class Client
 	Point depart;
 	Point arrivee;
 	ArrayList<Rectangle> obstacles;
-	ArrayList<Homme> list;
+	static ArrayList<Homme> list;
 	int nb_indiv;
 	
 	public Client(int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv)
@@ -32,15 +32,15 @@ public class Client
 		this.arrivee = arri;
 		this.obstacles = rec;
 		this.nb_indiv = indiv;
-		this.list = initListHomme(dep,arri,rec,nb_indiv);
+		this.list = initListHomme(dep,arri,rec,nb_indiv,p);
 	}
 	
-	ArrayList<Homme> initListHomme(Point dep,Point arri,ArrayList<Rectangle> rec,int nb_indiv)
+	ArrayList<Homme> initListHomme(Point dep,Point arri,ArrayList<Rectangle> rec,int nb_indiv, int pas)
 	{
 		ArrayList<Homme> res = new ArrayList<Homme>();
 		for (int i = 0; i < nb_indiv; i++)
 		{
-			res.add(new Homme(dep,arri,rec,nb_indiv));
+			res.add(new Homme(dep,arri,rec,pas,width, height));
 		}
 		return res;
 	}
@@ -139,7 +139,7 @@ public class Client
 	
 	Homme croissement(Homme h1,Homme h2)
 	{
-		Homme res=new Homme(h1.depart,h1.arrivee,h1.obstacles,h1.pas);
+		Homme res=new Homme(h1.depart,h1.arrivee,h1.obstacles,h1.pas,width, height);
 		ArrayList<Integer> adn=new ArrayList<Integer>();
 		
 		int coupe=(int)Math.random()*100;
@@ -193,11 +193,8 @@ public class Client
 						serv.getPas(),serv.getDepart(),
 						serv.getArrivee(),serv.getRectangle(),
 						serv.getNb_individus());
-			//Exemple à Marine à changer
-			Homme h = new Homme(new Point(-cl.width,0), new Point(cl.width,0), cl.obstacles,cl.pas);
-			h.attributionAdn(cl.width*2+cl.height*2);
 			
-			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),h);
+			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),list);
 			jf.setLocation(100, 100);
 			jf.pack();
 			jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

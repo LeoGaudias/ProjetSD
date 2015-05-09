@@ -18,15 +18,18 @@ public class Homme {
 	ArrayList<Rectangle> obstacles;
 	int pas;
 	
-	public Homme(Point dep,Point arr, ArrayList<Rectangle> obs,int pa)
+	public Homme(Point dep,Point arr, ArrayList<Rectangle> obs,int pa,int width, int height)
 	{
 		mort=false;
 		adn = new ArrayList<Integer>();
 		depart=dep;
 		arrivee=arr;
-		act=depart;
+		act=new Point(dep.x, dep.y);
 		obstacles=obs;
 		pas=pa;
+		longueur = width;
+		largeur = height;
+		attributionAdn(width*2+height*2);
 	}
 	
 	public ArrayList<Integer> getAdn()
@@ -105,7 +108,13 @@ public class Homme {
 					}
 				}
 				
-				adn.add(deplacementRandom());
+				if(act.x <=longueur & act.x >=-longueur && act.y <=largeur && act.y >=-largeur) {
+					adn.add(deplacementRandom());
+				}
+				else {
+					System.out.println("Collision avec le cadre à la "+ i + " itération");
+					break;
+				}
 				
 				if(act==arrivee)
 				{
@@ -153,37 +162,38 @@ public class Homme {
 		return p;
 	}
 	
-	void setPositionCourante(Point p_actuel ,int i) {
+	Point setPositionCourante(Point p_actuel ,int i) {
+		Point p = p_actuel;
 		switch(adn.get(i)) {
 		case 0:
-			p_actuel.setLocation(p_actuel.x,p_actuel.y+pas);
+			p.setLocation(p.x,p.y+pas);
 			break;
 		case 1:
-			p_actuel.setLocation(p_actuel.x+pas,p_actuel.y+pas);
+			p.setLocation(p.x+pas,p.y+pas);
 			break;
 		case 2:
-			p_actuel.setLocation(p_actuel.x+pas,p_actuel.y);
+			p.setLocation(p.x+pas,p.y);
 			break;
 		case 3:
-			p_actuel.setLocation(p_actuel.x+pas,p_actuel.y-pas);
+			p.setLocation(p.x+pas,p.y-pas);
 			break;
 		case 4:
-			p_actuel.setLocation(p_actuel.x,p_actuel.y-pas);
+			p.setLocation(p.x,p.y-pas);
 			break;
 		case 5:
-			p_actuel.setLocation(p_actuel.x-pas,p_actuel.y-pas);
+			p.setLocation(p.x-pas,p.y-pas);
 			break;
 		case 6:
-			p_actuel.setLocation(p_actuel.x-pas,p_actuel.y);
+			p.setLocation(p.x-pas,p.y);
 			break;
 		case 7:
-			p_actuel.setLocation(p_actuel.x-pas,p_actuel.y+pas);
+			p.setLocation(p.x-pas,p.y+pas);
 			break;
 		default:
 			System.out.println("Erreur dans le switch, valeur incorrecte !");
 			break;
 		}
-	
+		return p;
 	}
 	
 	double distance_depart_arrive()

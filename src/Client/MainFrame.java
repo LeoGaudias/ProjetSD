@@ -11,7 +11,7 @@ public class MainFrame extends JFrame
 	
 	public Maps m;
 	
-	public MainFrame(int width, int height,int nb_rectangles,Homme h)
+	public MainFrame(int width, int height,int nb_rectangles,ArrayList<Homme> h)
 	{
 		super();
 		m = new Maps(width, height,nb_rectangles,h);

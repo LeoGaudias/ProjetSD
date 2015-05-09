@@ -203,11 +203,6 @@ public class Homme {
 	
 	double distance_actuel_arrive()
 	{
-		return Math.sqrt(Math.pow(arrivee.x-act.x, 2)+Math.pow(arrivee.y-depart.y, 2));
-	}
-
-	double distance_actuel_arrive()
-	{
-		return Math.sqrt(Math.pow(arrivee.x-act.x, 2)+Math.pow(arrivee.y-depart.y, 2));
+		return Math.sqrt(Math.pow(arrivee.x-act.x, 2)+Math.pow(arrivee.y-act.y, 2));
 	}
 }

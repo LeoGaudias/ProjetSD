@@ -56,10 +56,22 @@ public class Client
 			}
 			else
 			{
-				if(list.get(i).distance_depart_arrive()<res.get(0).distance_depart_arrive())
+				boolean in=false;
+				for(int j=0;j<res.size();j++)
 				{
-					res.add(0,list.get(i));
+					if(list.get(i).distance_actuel_arrive()<=res.get(j).distance_actuel_arrive())
+					{
+						res.add(j,list.get(i));
+						in=true;
+						break;
+					}
 				}
+				
+				if(in==false)
+				{
+					res.add(list.get(i));
+				}
+				
 			}
 		}
 		

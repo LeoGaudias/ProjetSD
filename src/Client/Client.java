@@ -8,6 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -101,11 +102,12 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		{
 			for(int i=0;i<select.size();i++)
 			{
-				int rnd1=(int)Math.random()*select.size();
-				int rnd2=(int)Math.random()*select.size();
-				if(rnd2==rnd1)
+				Random rand = new Random(); 
+				int rnd1=rand.nextInt(select.size()); 
+				int rnd2=rand.nextInt(select.size()); 
+				while(rnd2==rnd1)
 				{
-					rnd2=(int)Math.random()*select.size();
+					rnd2=rand.nextInt(select.size());
 				}
 				
 				Homme temp=croissement(select.get(rnd1),select.get(rnd2));
@@ -114,8 +116,8 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 				// suppression de ceux croisés comme ça par de réutilisation :
 				// à voir si un homme n'a pas le droit d'avoir plus d'un enfant
 				// s'il a le droit il suffit de vérifier que l'enfant créé n'est pas déjà présent dans res
-				select.remove(rnd1);
-				select.remove(rnd2);
+			//	select.remove(rnd1);
+			//	select.remove(rnd2);
 			}
 		}
 		else
@@ -123,15 +125,16 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			recep.add(select); // ajout de nos meilleurs
 			for(int i=0;i<recep.get(0).size();i++)
 			{
-				int client=(int)Math.random()*recep.size(); // choix du client
-				int client2=(int)Math.random()*recep.size();
-				if(client2==client)
+				Random rand = new Random();
+				int client=rand.nextInt(recep.size()); // choix du client
+				int client2=rand.nextInt(recep.size());
+				while(client2==client)
 				{
-					client2=(int)Math.random()*recep.size();
+					client2=rand.nextInt(recep.size());
 				}
 				
-				int rnd1=(int)Math.random()*recep.get(client).size();
-				int rnd2=(int)Math.random()*recep.get(client2).size();
+				nt rnd1=rand.nextInt(recep.get(client).size());
+				int rnd2=rand.nextInt(recep.get(client2).size());
 				
 				Homme temp=croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));
 				res.add(mutation(temp));
@@ -146,7 +149,8 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		ArrayList<Homme> select=new ArrayList<Homme>();
 		for(int i=0;i<list.size();i++)
 		{
-			if(Math.random()*100>1/i*100)
+			double rand = Math.random();
+			if(rand<=1./(i+1))
 			{
 				select.add(list.get(i));
 			}
@@ -160,7 +164,8 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		Homme res=new Homme(h1.depart,h1.arrivee,h1.obstacles,h1.pas,width, height);
 		ArrayList<Integer> adn=new ArrayList<Integer>();
 		
-		int coupe=(int)Math.random()*100;
+		Random rand = new Random();
+		int coupe=rand.nextInt(h1.getAdn().size()-2)+1; 
 		for(int i=0;i<h1.getAdn().size();i++)
 		{
 			if(i<=coupe)
@@ -179,9 +184,11 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	Homme mutation(Homme h)
 	{
 		Homme res=h;
-		if(Math.random()*100<=7)
+		int pourcent = (int) (0.04*res.getAdn().size());
+		for(int i=0; i<pourcent; i++)
 		{
-			int pos=(int)Math.random()*h.getAdn().size();
+			Random rand = new Random();
+			int pos=rand.nextInt(h.getAdn().size());
 			Integer val=(int)Math.random()*7;
 			res.changer1Adn(pos, val);
 		}
@@ -191,7 +198,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	
 	void renouvellement(ArrayList<Homme> enfants)
 	{
-		for(int i=list.size()-enfants.size()-1;i<list.size();i++) // suppression des plus mauvais
+		for(int i=list.size()-enfants.size();i<list.size();i++) // suppression des plus mauvais
 		{
 			list.remove(i);
 		}
@@ -226,6 +233,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 						serv.getNb_individus());
 			// L'interface peut peut être suffir au lieu d'envoyer tout l'objet client
 			serv.registerForCallback((CallBackClient)cl);
+			cl.reproduction();
 			
 			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),cl.list);
 			jf.setLocation(100, 100);

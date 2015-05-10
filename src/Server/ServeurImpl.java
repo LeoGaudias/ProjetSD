@@ -2,14 +2,18 @@ package Server;
 import java.awt.Point;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+import Client.CallBackClient;
 import Obstacle.Rectangle;;
 
 public class ServeurImpl extends UnicastRemoteObject implements Serveur
 {
 	private static final long serialVersionUID = 1L;
+	
 	private int nb_obstacle;
 	private int m_x;
 	private int m_y;
@@ -21,7 +25,8 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	private ArrayList<Rectangle> listRect;
 	private Point depart;
 	private Point arrivee;
-
+	private ArrayList<CallBackClient> listCl;
+	
 	protected ServeurImpl() throws RemoteException 
 	{
 		super();
@@ -43,6 +48,8 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		this.setListRect(createRectangle());
 		this.setDepart(createDepart());
 		this.setArrivee(createArrivee());
+		
+		this.listCl = new ArrayList<CallBackClient>();
 	}
 	
 	//-----------------------------------------------------
@@ -208,6 +215,47 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		return arrivee;
 	}
 	
+	public synchronized void registerForCallback(CallBackClient callbackClientObject) throws RemoteException
+	{		      
+		if (!(listCl.contains(callbackClientObject))) 
+		{
+			listCl.add(callbackClientObject);
+			System.out.println("Registered new client ");
+			doCallbacks();
+		}
+	}  
+	
+	// affiche le nombre de client connecté
+	// effectué que par le serveur
+	private synchronized void doCallbacks( ) throws RemoteException
+	{
+		System.out.println("**************************************");
+		System.out.println("Callbacks initiated ---");
+		for (int i = 0; i < listCl.size(); i++)
+		{
+			System.out.println("doing "+ i +"-th callback\n");      
+			CallBackClient nextClient = (CallBackClient)listCl.get(i);
+			nextClient.notifyMe("Number of registered clients=" +  listCl.size());
+		}
+		System.out.println("********************************");
+		System.out.println("Server completed callbacks ---");
+	}
+	
+	// appelé que par le serveur lui même
+	private static void startRegistry(int PortNum)throws RemoteException
+	{
+		Registry registry;
+		try
+		{
+			registry = LocateRegistry.getRegistry(PortNum);
+			registry.list();
+		}
+		catch (RemoteException e)
+		{ 
+			registry = LocateRegistry.createRegistry(PortNum);
+		}
+	} 
+	
 	//-----------------------------------------------------
 	// getter-setter
 	//-----------------------------------------------------
@@ -301,6 +349,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 					Integer.parseInt(args[3]),
 					Integer.parseInt(args[4]),
 					Integer.parseInt(args[5]));
+			startRegistry(Integer.parseInt(args[0]));
 			Naming.rebind("rmi://localhost:"+ args[0] + "/Serveur", serv);
 			System.out.println("Serveur en service");
 		}

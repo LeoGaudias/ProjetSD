@@ -6,14 +6,19 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+
 import javax.swing.JFrame;
 
 import Obstacle.Rectangle;
 import Server.Serveur;
 
-public class Client
+public class Client extends UnicastRemoteObject implements CallBackClient
 {
+	
+	private static final long serialVersionUID = 1L;
+	
 	int width;
 	int height;
 	int pas;
@@ -23,8 +28,9 @@ public class Client
 	ArrayList<Homme> list;
 	int nb_indiv;
 	
-	public Client(int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv)
+	public Client(int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv) throws RemoteException
 	{
+		super();
 		this.width = w;
 		this.height = h;
 		this.pas = p;
@@ -196,6 +202,19 @@ public class Client
 		}
 	}
 	
+	//-----------------------------------------------------
+	// fonctions RMI
+	//-----------------------------------------------------
+	
+	public String notifyMe(String message) throws RemoteException
+	{
+		String returnMessage = "Call back received: " + message;
+		System.out.println(returnMessage);
+		return returnMessage;
+	}
+	
+	//-----------------------------------------------------
+	
 	public static void main(String[] args)
 	{
 		try
@@ -205,6 +224,8 @@ public class Client
 						serv.getPas(),serv.getDepart(),
 						serv.getArrivee(),serv.getListRect(),
 						serv.getNb_individus());
+			// L'interface peut peut être suffir au lieu d'envoyer tout l'objet client
+			serv.registerForCallback((CallBackClient)cl);
 			
 			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),cl.list);
 			jf.setLocation(100, 100);
@@ -212,6 +233,8 @@ public class Client
 			jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			jf.setLayout(new BorderLayout());
 			jf.setVisible(true);
+			
+
 		}
 		catch (NotBoundException re) { System.out.println(re) ; }
 		catch (RemoteException re) { System.out.println(re) ; }

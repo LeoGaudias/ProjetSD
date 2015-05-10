@@ -59,9 +59,11 @@ public class Homme {
 	{
 		for(int i = 0; i < taille; ++i)
 		{
+			int deplacement=deplacementRandom();
+			adn.add(deplacementRandom());
+			
 			if(mort==false && !act.equals(arrivee))
 			{
-				int deplacement=deplacementRandom();
 				switch(deplacement)
 				{
 					case 0:
@@ -96,31 +98,28 @@ public class Homme {
 						System.out.println("Erreur dans le switch, valeur incorrecte !");
 						break;
 				}
+			}
 				
-				Iterator<Rectangle> it=obstacles.iterator();
-				while(it.hasNext())
+			Iterator<Rectangle> it=obstacles.iterator();
+			while(it.hasNext())
+			{
+				if(it.next().isInside(act))
 				{
-					if(it.next().isInside(act))
-					{
-						System.out.println("Collision : you died !");
-						mort=true;
-						break;
-					}
-				}
-				
-				if(act.x <=longueur && act.x >=-longueur && act.y <=largeur && act.y >=-largeur) {
-					adn.add(deplacementRandom());
-				}
-				else {
-					System.out.println("Collision avec le cadre à la "+ i + " itération");
+					//System.out.println("Collision : you died !");
+					mort=true;
 					break;
 				}
-				
-				if(act==arrivee)
-				{
-					System.out.println("Vous êtes arrivés à destionation !! bien :o");
-					break;
-				}
+			}
+			
+			if(!(act.x <=longueur && act.x >=-longueur && act.y <=largeur && act.y >=-largeur))
+			{
+				//System.out.println("Collision avec le cadre à la "+ i + " itération");
+				mort=true;
+			}
+			
+			if(act==arrivee)
+			{
+				System.out.println("Vous êtes arrivés à destionation !! bien :o");
 			}
 		}
 	}

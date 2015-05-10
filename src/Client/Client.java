@@ -133,7 +133,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 					client2=rand.nextInt(recep.size());
 				}
 				
-				nt rnd1=rand.nextInt(recep.get(client).size());
+				int rnd1=rand.nextInt(recep.get(client).size());
 				int rnd2=rand.nextInt(recep.get(client2).size());
 				
 				Homme temp=croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));

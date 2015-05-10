@@ -78,7 +78,7 @@ public class Maps implements GLEventListener {
 			int modulo = 1;
 			 for(int j=0; j<list_hommes.get(i).getAdn().size(); j++) {
 				 p = list_hommes.get(i).setPositionCourante(p, j);
-				 if(modulo%(list_hommes.get(i).getAdn().size()/10)==0) {
+				 if(modulo%(list_hommes.get(i).getAdn().size()/100)==0) {
 			
 					 gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
 				 }

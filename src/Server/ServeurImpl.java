@@ -45,8 +45,8 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		this.setHigher_y((getM_y()) - 50);
 		this.setPas(p);
 		this.setNb_individus(indiv);
-		this.setListRect(createRectangle());
 		this.setDepart(createDepart());
+		this.setListRect(createRectangle());
 		this.setArrivee(createArrivee());
 		
 		this.listCl = new ArrayList<CallBackClient>();
@@ -110,7 +110,25 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 			c2.setLocation((int)c1.getX() + (int)(Math.random() * range_x_max) , (int)c1.getY());
 			c3.setLocation((int)c2.getX() , (int)c1.getY() + (int)(Math.random() * range_y_max));
 			c4.setLocation((int)c1.getX(), (int)c3.getY());
-			tab.add(new Rectangle(c1,c2,c3,c4));
+			
+			Rectangle rect=new Rectangle(c1,c2,c3,c4);
+			
+			try
+			{
+				if(rect.isInside(this.getDepart()))
+				{
+					i--;
+				}
+				else
+				{
+					tab.add(rect);
+				}
+			}
+			catch(RemoteException e)
+			{
+				e.printStackTrace();
+			}
+			
 		}
 		return tab;
 	}

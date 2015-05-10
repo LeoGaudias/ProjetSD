@@ -100,19 +100,20 @@ public class Homme {
 						System.out.println("Erreur dans le switch, valeur incorrecte !");
 						break;
 				}
-			}
 				
-			Iterator<Rectangle> it=obstacles.iterator();
-			while(it.hasNext())
-			{
-				if(it.next().isInside(act))
+				Iterator<Rectangle> it=obstacles.iterator();
+				while(it.hasNext())
 				{
-					//System.out.println("Collision : you died !");
-					mort=true;
-					arret = i;
-					break;
+					if(it.next().isInside(act))
+					{
+						System.out.println("Collision : you died !"+i);
+						mort=true;
+						arret = i;
+						break;
+					}
 				}
 			}
+			
 			
 			if(!(act.x <=longueur && act.x >=-longueur && act.y <=largeur && act.y >=-largeur))
 			{

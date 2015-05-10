@@ -17,6 +17,7 @@ public class Homme {
 	Point act;
 	ArrayList<Rectangle> obstacles;
 	int pas;
+	int arret;
 	
 	public Homme(Point dep,Point arr, ArrayList<Rectangle> obs,int pa,int width, int height)
 	{
@@ -29,6 +30,7 @@ public class Homme {
 		pas=pa;
 		longueur = width;
 		largeur = height;
+		arret = width*2+height*2;
 		attributionAdn(width*2+height*2);
 	}
 	
@@ -107,6 +109,7 @@ public class Homme {
 				{
 					//System.out.println("Collision : you died !");
 					mort=true;
+					arret = i;
 					break;
 				}
 			}

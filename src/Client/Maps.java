@@ -69,6 +69,7 @@ public class Maps implements GLEventListener {
 	void drawDeplacement(GL2 gl, int tailleDeplacement)
 	{
 		for(int i=0; i<list_hommes.size(); i++) {
+			boolean end = true;
 			gl.glBegin(GL2.GL_LINE_STRIP);
 			Random randcolor = new Random();
 			gl.glColor3f(randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f);
@@ -78,6 +79,11 @@ public class Maps implements GLEventListener {
 			int modulo = 1;
 			 for(int j=0; j<list_hommes.get(i).getAdn().size(); j++) {
 				 p = list_hommes.get(i).setPositionCourante(p, j);
+				 if(list_hommes.get(i).arret == j) {
+					 end = false;
+					 gl.glEnd();
+					 break;	 
+				 }
 				 if(modulo%(list_hommes.get(i).getAdn().size()/100)==0) {
 			
 					 gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
@@ -85,7 +91,9 @@ public class Maps implements GLEventListener {
 				 modulo++;
 				
 			 }
-			 gl.glEnd();
+			 if(end) {
+				 gl.glEnd();
+			 }
 		}
 	}
 

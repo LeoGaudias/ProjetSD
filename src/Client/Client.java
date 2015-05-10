@@ -29,6 +29,8 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	ArrayList<Homme> list;
 	int nb_indiv;
 	
+	boolean isOk;
+	
 	public Client(int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv) throws RemoteException
 	{
 		super();
@@ -88,75 +90,67 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	void reproduction()
 	{
 		list=classement();
-		ArrayList<Homme> select=selection();
-		
-		// envoye serveur
-		
-		// réception du serveur des meilleurs des autres clients
-		ArrayList<ArrayList<Homme>> recep;
-		recep=new ArrayList<ArrayList<Homme>>(); // temporaire
-		
-		ArrayList<Homme> res=new ArrayList<Homme>();
-		
-		if(recep.size()==0) // pas d'autre client
+		ArrayList<Homme> select;
+		try 
 		{
-			for(int i=0;i<select.size();i++)
+			select = selection();
+			// envoye serveur
+			
+			// réception du serveur des meilleurs des autres clients
+			ArrayList<ArrayList<Homme>> recep;
+			recep=new ArrayList<ArrayList<Homme>>(); // temporaire
+			
+			ArrayList<Homme> res=new ArrayList<Homme>();
+			
+			if(recep.size()==0) // pas d'autre client
 			{
-				Random rand = new Random(); 
-				int rnd1=rand.nextInt(select.size()); 
-				int rnd2=rand.nextInt(select.size()); 
-				while(rnd2==rnd1)
+				for(int i=0;i<select.size();i++)
 				{
-					rnd2=rand.nextInt(select.size());
+					Random rand = new Random(); 
+					int rnd1=rand.nextInt(select.size()); 
+					int rnd2=rand.nextInt(select.size()); 
+					while(rnd2==rnd1)
+					{
+						rnd2=rand.nextInt(select.size());
+					}
+					
+					Homme temp=croissement(select.get(rnd1),select.get(rnd2));
+					res.add(mutation(temp));
+					
+					// suppression de ceux croisés comme ça par de réutilisation :
+					// à voir si un homme n'a pas le droit d'avoir plus d'un enfant
+					// s'il a le droit il suffit de vérifier que l'enfant créé n'est pas déjà présent dans res
+				//	select.remove(rnd1);
+				//	select.remove(rnd2);
 				}
-				
-				Homme temp=croissement(select.get(rnd1),select.get(rnd2));
-				res.add(mutation(temp));
-				
-				// suppression de ceux croisés comme ça par de réutilisation :
-				// à voir si un homme n'a pas le droit d'avoir plus d'un enfant
-				// s'il a le droit il suffit de vérifier que l'enfant créé n'est pas déjà présent dans res
-			//	select.remove(rnd1);
-			//	select.remove(rnd2);
 			}
-		}
-		else
-		{
-			recep.add(select); // ajout de nos meilleurs
-			for(int i=0;i<recep.get(0).size();i++)
+			else
 			{
-				Random rand = new Random();
-				int client=rand.nextInt(recep.size()); // choix du client
-				int client2=rand.nextInt(recep.size());
-				while(client2==client)
+				recep.add(select); // ajout de nos meilleurs
+				for(int i=0;i<recep.get(0).size();i++)
 				{
-					client2=rand.nextInt(recep.size());
+					Random rand = new Random();
+					int client=rand.nextInt(recep.size()); // choix du client
+					int client2=rand.nextInt(recep.size());
+					while(client2==client)
+					{
+						client2=rand.nextInt(recep.size());
+					}
+					
+					int rnd1=rand.nextInt(recep.get(client).size());
+					int rnd2=rand.nextInt(recep.get(client2).size());
+					
+					Homme temp=croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));
+					res.add(mutation(temp));
 				}
-				
-				int rnd1=rand.nextInt(recep.get(client).size());
-				int rnd2=rand.nextInt(recep.get(client2).size());
-				
-				Homme temp=croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));
-				res.add(mutation(temp));
 			}
+			
+			renouvellement(res);
 		}
-		
-		renouvellement(res);
-	}
-	
-	ArrayList<Homme> selection()
-	{
-		ArrayList<Homme> select=new ArrayList<Homme>();
-		for(int i=0;i<list.size();i++)
+		catch (RemoteException e)
 		{
-			double rand = Math.random();
-			if(rand<=1./(i+1))
-			{
-				select.add(list.get(i));
-			}
+			e.printStackTrace();
 		}
-		
-		return select;
 	}
 	
 	Homme croissement(Homme h1,Homme h2)
@@ -215,9 +209,30 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	
 	public String notifyMe(String message) throws RemoteException
 	{
-		String returnMessage = "Call back received: " + message;
+		String returnMessage = "Call back received: " + message + " width du client " + this.width;
 		System.out.println(returnMessage);
 		return returnMessage;
+	}
+	
+	public ArrayList<Homme> selection() throws RemoteException 
+	{
+		ArrayList<Homme> select=new ArrayList<Homme>();
+		for(int i=0;i<list.size();i++)
+		{
+			double rand = Math.random();
+			if(rand<=1./(i+1))
+			{
+				select.add(list.get(i));
+			}
+		}
+		
+		return select;
+	}
+	
+	//est ok quand tout les calculs sont ok
+	public boolean ClientIsOk() throws RemoteException
+	{
+		return this.isOk;
 	}
 	
 	//-----------------------------------------------------
@@ -232,8 +247,8 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 						serv.getArrivee(),serv.getListRect(),
 						serv.getNb_individus());
 			// L'interface peut peut être suffir au lieu d'envoyer tout l'objet client
-			serv.registerForCallback((CallBackClient)cl);
-			cl.reproduction();
+			
+			//cl.reproduction();
 			
 			JFrame jf = new MainFrame(cl.width, cl.height,serv.getNb_obstacle(),cl.list);
 			jf.setLocation(100, 100);
@@ -241,6 +256,17 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			jf.setLayout(new BorderLayout());
 			jf.setVisible(true);
+			
+			serv.registerForCallback((CallBackClient)cl);
+			//while(!serv.EverybodyIsRegister());
+			/*
+			 * while(!atteint la sortie)
+			 * {
+			 * 	ArrayList<ArrayList<Homme>> = serv.getDonnees;
+			 *  puis traité ces données, je ne sais pas si la fonction est faite ou non
+			 * }
+			 * 
+			*/
 			
 
 		}

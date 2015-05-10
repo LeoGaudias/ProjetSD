@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import Client.CallBackClient;
+import Client.Homme;
 import Obstacle.Rectangle;
 
 public interface Serveur extends java.rmi.Remote
@@ -19,4 +20,6 @@ public interface Serveur extends java.rmi.Remote
 	public Point getArrivee() throws RemoteException;
 	
 	public void registerForCallback(CallBackClient callbackClientObject) throws RemoteException;
+	public boolean EverybodyIsRegister() throws RemoteException;
+	public ArrayList<ArrayList<Homme>> getDonnees(CallBackClient callbackClientObject) throws RemoteException;
 }

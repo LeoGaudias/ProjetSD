@@ -6,8 +6,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-
 import Client.CallBackClient;
+import Client.Homme;
 import Obstacle.Rectangle;;
 
 public class ServeurImpl extends UnicastRemoteObject implements Serveur
@@ -26,13 +26,14 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	private Point depart;
 	private Point arrivee;
 	private ArrayList<CallBackClient> listCl;
+	int nb_client;
 	
 	protected ServeurImpl() throws RemoteException 
 	{
 		super();
 	}
 	
-	protected ServeurImpl(int nb,int x,int y,int p,int indiv) throws RemoteException 
+	protected ServeurImpl(int nb,int x,int y,int p,int indiv,int nbc) throws RemoteException 
 	{
 		super();
 		this.setNb_obstacle(nb);
@@ -50,6 +51,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		this.setArrivee(createArrivee());
 		
 		this.listCl = new ArrayList<CallBackClient>();
+		this.nb_client = nbc;
 	}
 	
 	//-----------------------------------------------------
@@ -234,14 +236,44 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	}
 	
 	public synchronized void registerForCallback(CallBackClient callbackClientObject) throws RemoteException
-	{		      
-		if (!(listCl.contains(callbackClientObject))) 
+	{	
+		if(listCl.size() < this.nb_client)
 		{
-			listCl.add(callbackClientObject);
-			System.out.println("Registered new client ");
-			doCallbacks();
+			if (!(listCl.contains(callbackClientObject))) 
+			{
+				listCl.add(callbackClientObject);
+				System.out.println("Registered new client ");
+				doCallbacks();
+			}
 		}
-	}  
+	}
+	
+	public boolean EverybodyIsRegister() throws RemoteException
+	{
+		if(listCl.size() == nb_client)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public ArrayList<ArrayList<Homme>> getDonnees(CallBackClient callbackClientObject) throws RemoteException
+	{
+		ArrayList<ArrayList<Homme>> res = new ArrayList<ArrayList<Homme>>();
+		for(CallBackClient ccl : listCl)
+		{
+			//peut être faire un equals
+			if(ccl != callbackClientObject)
+			{
+				while(!ccl.ClientIsOk());
+				res.add(ccl.selection());
+			}
+		}
+		return res;
+	}
 	
 	// affiche le nombre de client connecté
 	// effectué que par le serveur
@@ -253,7 +285,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		{
 			System.out.println("doing "+ i +"-th callback\n");      
 			CallBackClient nextClient = (CallBackClient)listCl.get(i);
-			nextClient.notifyMe("Number of registered clients=" +  listCl.size());
+			System.out.println(nextClient.notifyMe("Number of registered clients=" +  listCl.size()));
 		}
 		System.out.println("********************************");
 		System.out.println("Server completed callbacks ---");
@@ -354,10 +386,10 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	
 	public static void main(String[] args)
 	{
-		if(args.length != 6)
+		if(args.length != 7)
 		{
 			System.out.println("Usage : java ServerImpl <port> <nb Obstacle> <Size x>"
-					+ "<Size y> <taille pas> <nb individu>");
+					+ "<Size y> <taille pas> <nb individu> <nb Client>");
 			System.exit(0);
 		}
 		try
@@ -366,7 +398,8 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 					Integer.parseInt(args[2]),
 					Integer.parseInt(args[3]),
 					Integer.parseInt(args[4]),
-					Integer.parseInt(args[5]));
+					Integer.parseInt(args[5]),
+					Integer.parseInt(args[6]));
 			startRegistry(Integer.parseInt(args[0]));
 			Naming.rebind("rmi://localhost:"+ args[0] + "/Serveur", serv);
 			System.out.println("Serveur en service");

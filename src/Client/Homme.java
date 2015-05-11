@@ -1,13 +1,14 @@
 package Client;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import Obstacle.Rectangle;
 
-public class Homme {
-
+public class Homme implements Serializable
+{
 	private ArrayList<Integer> adn;
 	int longueur;
 	int largeur;

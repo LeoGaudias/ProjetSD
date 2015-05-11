@@ -202,9 +202,10 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	
 	void renouvellement(ArrayList<Homme> enfants)
 	{
-		for(int i=list.size()-enfants.size();i<list.size();i++) // suppression des plus mauvais
+		int taille=list.size();
+		for(int i=list.size()-enfants.size();i<taille;i++) // suppression des plus mauvais
 		{
-			list.remove(i);
+			list.remove(list.size()-1);
 		}
 		
 		for(int i=0;i<enfants.size();i++)
@@ -282,6 +283,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			
 			while(!cl.estArrive) {
 				cl.reproduction();
+				System.out.println("Taille liste"+cl.list.size());
 				compteur++;
 				System.out.println(compteur);
 				if(compteur%100==0) {

@@ -237,6 +237,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	
 	public synchronized boolean registerForCallback(CallBackClient callbackClientObject) throws RemoteException
 	{	
+		boolean res=false;
 		if(listCl.size() < this.nb_client)
 		{
 			if (!(listCl.contains(callbackClientObject))) 
@@ -244,10 +245,11 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 				listCl.add(callbackClientObject);
 				System.out.println("Registered new client ");
 				doCallbacks();
-				return true;
+				res=true;
 			}
 		}
-		return false;
+		
+		return res;
 	}
 	
 	public boolean EverybodyIsRegister() throws RemoteException
@@ -268,7 +270,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 		for(CallBackClient ccl : listCl)
 		{
 			//peut être faire un equals
-			if(ccl != callbackClientObject)
+			if(!ccl.equals(callbackClientObject))
 			{
 				while(!ccl.ClientIsOk());
 				res.add(ccl.selection());

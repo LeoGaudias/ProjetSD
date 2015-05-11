@@ -17,7 +17,6 @@ import Server.Serveur;
 
 public class Client extends UnicastRemoteObject implements CallBackClient
 {
-	
 	private static final long serialVersionUID = 1L;
 	
 	Serveur serv;
@@ -193,7 +192,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		{
 			Random rand = new Random();
 			int pos=rand.nextInt(h.getAdn().size());
-			Integer val=(int)Math.random()*7;
+			Integer val=(int)Math.random()*8;
 			res.changer1Adn(pos, val);
 		}
 		
@@ -250,9 +249,18 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	
 	public static void main(String[] args)
 	{
+		if(args.length != 2)
+		{
+			System.out.println("Usage : java ServerImpl <adresseip> <port>");
+			System.exit(0);
+		}
+		
+		String ip=args[0];
+		String port=args[1];
+		
 		try
 		{
-			Serveur serv = (Serveur) Naming.lookup("//127.0.0.1:5000/Serveur");
+			Serveur serv = (Serveur) Naming.lookup("//"+ip+":"+port+"/Serveur");
 			Client cl = new Client(serv,serv.getM_x(),serv.getM_y(),
 						serv.getPas(),serv.getDepart(),
 						serv.getArrivee(),serv.getListRect(),
@@ -270,8 +278,10 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			
 			if(!serv.registerForCallback((CallBackClient)cl))
 			{
-				System.exit(0);
+				System.out.println("Trop de clients");
+				System.exit(-1);
 			}
+
 			while(!serv.EverybodyIsRegister());
 			/*
 			 * while(!atteint la sortie)
@@ -284,12 +294,14 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			
 			int compteur = 0;
 			
-			while(!cl.estArrive) {
+			while(!cl.estArrive)
+			{
 				cl.reproduction();
-				System.out.println("Taille liste"+cl.list.size());
+				//System.out.println("Taille liste"+cl.list.size());
 				compteur++;
 				System.out.println(compteur);
-				if(compteur%100==0) {
+				if(compteur%100==0)
+				{
 					((MainFrame) jf).refresh(cl.list);
 				}
 				for(Homme l : cl.list)
@@ -300,7 +312,6 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 					}
 				}
 			}
-
 		}
 		catch (NotBoundException re) { System.out.println(re) ; }
 		catch (RemoteException re) { System.out.println(re) ; }

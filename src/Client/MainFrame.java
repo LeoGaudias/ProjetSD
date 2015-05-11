@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
-
 public class MainFrame extends JFrame
 {
 	private static final long serialVersionUID = 1L;
@@ -18,8 +17,6 @@ public class MainFrame extends JFrame
 		this.setTitle("Project");
 		this.getContentPane().setPreferredSize(new Dimension(width,height));
 		this.getContentPane().add(m.canvas);
-		
-		
 	}
 
 	public void refresh(ArrayList<Homme> list) {

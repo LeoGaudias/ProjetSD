@@ -40,21 +40,21 @@ public class MainFrame extends Application
         grid.add(scenetitle, 0, 0, 2, 1);
 
         Label lIp = new Label("Adresse ip du serveur:");
-        TextField tfIp = new TextField();
+        final TextField tfIp = new TextField();
         Label lPort = new Label("Port du serveur:");
-        TextField tfPort = new TextField();
+        final TextField tfPort = new TextField();
         Label lNbCl = new Label("Nombre de client:");
-        TextField tfNbCl = new TextField();
+        final TextField tfNbCl = new TextField();
         Label lNbObs = new Label("Nombre d'obstacles:");
-        TextField tfNbObs = new TextField();
+        final TextField tfNbObs = new TextField();
         Label lX = new Label("Taille de la fenêtre en X:");
-        TextField tfX = new TextField();
+        final TextField tfX = new TextField();
         Label lY = new Label("Taille de la fenêtre en Y:");
-        TextField tfY = new TextField();
+        final TextField tfY = new TextField();
         Label lPas = new Label("Taille du pas d'un individu:");
-        TextField tfPas = new TextField();
+        final TextField tfPas = new TextField();
         Label lNbIndiv = new Label("Nombre d'individu par village:");
-        TextField tfNbIndiv = new TextField();
+        final TextField tfNbIndiv = new TextField();
         
         grid.add(lIp, 0, 1);
         grid.add(tfIp, 1, 1);
@@ -80,7 +80,6 @@ public class MainFrame extends Application
         Button btn = new Button("Lancer le serveur");
         btn.setOnAction(new EventHandler<ActionEvent>() 
 		{
-	        @Override
 	        public void handle(ActionEvent event) 
 	        {
 	        	if(tfIp.getText().compareTo("")==0)

@@ -27,7 +27,6 @@ public class Maps implements GLEventListener {
 		width = w;
 		height = he;
 	
-		
 		list_hommes = l_h;
 	}
 
@@ -56,7 +55,18 @@ public class Maps implements GLEventListener {
 	
 	void drawSortieMap(GL2 gl)
 	{
-		//TODO
+		Point p = new Point(list_hommes.get(0).arrivee.x,list_hommes.get(0).arrivee.y);
+		gl.glColor3d(1, 0, 0);
+		
+		gl.glBegin(GL2.GL_QUADS);
+		
+		gl.glVertex3d((double)(p.x-10)/width,(double) (p.y+10)/height, 0);
+		gl.glVertex3d((double)(p.x+10)/width,(double) (p.y+10)/height, 0);
+		gl.glVertex3d((double)(p.x+10)/width,(double) (p.y-10)/height, 0);
+		gl.glVertex3d((double)(p.x-10)/width,(double) (p.y-+10)/height, 0);
+		
+		gl.glEnd();
+		gl.glColor3d(0, 0, 0);
 	}
 	
 	void drawObstacle(GL2 gl)
@@ -80,30 +90,32 @@ public class Maps implements GLEventListener {
 			Random randcolor = new Random();
 			gl.glColor3f(randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f);
 		
-			Point p = new Point(list_hommes.get(i).depart.x,list_hommes.get(i).depart.y); //point de dÃ©part
+			Point p = new Point(list_hommes.get(i).depart.x,list_hommes.get(i).depart.y); //point de d�part
 			gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
 			int modulo = 1;
-			 for(int j=0; j<list_hommes.get(i).getAdn().size(); j++) {
-				 p = list_hommes.get(i).setPositionCourante(p, j);
-				 if(list_hommes.get(i).arret == j) {
-					 end = false;
-					 gl.glEnd();
-					 break;	 
-				 }
-				 if(modulo%(list_hommes.get(i).getAdn().size()/100)==0) {
-			
-					 gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
-				 }
+			for(int j=0; j<list_hommes.get(i).getAdn().size(); j++)
+			{
+				p = list_hommes.get(i).setPositionCourante(p, j);
+				if(list_hommes.get(i).arret == j)
+				{
+					end = false;
+					gl.glEnd();
+					break;	 
+				}
+				if(modulo%(list_hommes.get(i).getAdn().size()/100)==0)
+				{
+					gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
+				}
 				 modulo++;
 				
-			 }
-			 if(end) {
-				 gl.glEnd();
-			 }
+			}
+			if(end)
+			{
+				gl.glEnd();
+			}
 		}
 	}
 
-	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		// GLU glu = GLU.createGLU(gl);
@@ -126,22 +138,20 @@ public class Maps implements GLEventListener {
 		drawRepere(gl);
 		drawObstacle(gl);
 		drawDeplacement(gl,16);
+		drawSortieMap(gl);
 		//glutSwapBuffers();
 	}
 
-	@Override
 	public void dispose(GLAutoDrawable arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void init(GLAutoDrawable arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
 			int arg4) {
 		// TODO Auto-generated method stub

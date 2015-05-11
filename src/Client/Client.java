@@ -268,7 +268,10 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			jf.setLayout(new BorderLayout());
 			jf.setVisible(true);
 			
-			serv.registerForCallback((CallBackClient)cl);
+			if(!serv.registerForCallback((CallBackClient)cl))
+			{
+				System.exit(0);
+			}
 			while(!serv.EverybodyIsRegister());
 			/*
 			 * while(!atteint la sortie)

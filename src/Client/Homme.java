@@ -59,7 +59,7 @@ public class Homme implements Serializable
 	// mais Max = 7 et Min = 0
 	int deplacementRandom()
 	{
-		return (int)(Math.random() * 7);
+		return (int)(Math.random() * 8);
 	}
 	
 	void attributionAdn(int taille)

@@ -19,7 +19,7 @@ public interface Serveur extends java.rmi.Remote
 	public Point getDepart() throws RemoteException;
 	public Point getArrivee() throws RemoteException;
 	
-	public void registerForCallback(CallBackClient callbackClientObject) throws RemoteException;
+	public boolean registerForCallback(CallBackClient callbackClientObject) throws RemoteException;
 	public boolean EverybodyIsRegister() throws RemoteException;
 	public ArrayList<ArrayList<Homme>> getDonnees(CallBackClient callbackClientObject) throws RemoteException;
 }

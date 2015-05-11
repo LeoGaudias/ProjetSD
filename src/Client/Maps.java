@@ -30,6 +30,12 @@ public class Maps implements GLEventListener {
 		
 		list_hommes = l_h;
 	}
+
+	public void refresh(ArrayList<Homme> l) {
+		list_hommes = l;
+		System.out.println("refresh!!");
+		canvas.repaint();
+	}
 	
 	void drawRepere(GL2 gl)
 	{
@@ -37,14 +43,14 @@ public class Maps implements GLEventListener {
 		gl.glColor3d(1,0,0);
 		gl.glBegin(GL2.GL_LINES);
 		gl.glVertex3d(0,0,0);
-		gl.glVertex3d(400,0,0);
+		gl.glVertex3d(1,0,0);
 		gl.glEnd();
 
 		// axe des y
 		gl.glColor3d(0,1,0);
 		gl.glBegin(GL2.GL_LINES);
 		gl.glVertex3d(0,0,0);
-		gl.glVertex3d(0,300,0);
+		gl.glVertex3d(0,1,0);
 		gl.glEnd();
 	}
 	
@@ -108,7 +114,7 @@ public class Maps implements GLEventListener {
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		gl.glOrtho(-400,400,-300,300,0,0);
+		gl.glOrtho(-1,1,-1,1,0,0);
 		// gluPerspective( 60, (float)width/height, 1, 100);
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);

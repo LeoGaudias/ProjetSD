@@ -268,6 +268,15 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			 * 
 			*/
 			
+			int compteur = 0;
+			while(true) {
+				cl.reproduction();
+				compteur++;
+				System.out.println(compteur);
+				if(compteur%100==0) {
+					((MainFrame) jf).refresh(cl.list);
+				}
+			}
 
 		}
 		catch (NotBoundException re) { System.out.println(re) ; }

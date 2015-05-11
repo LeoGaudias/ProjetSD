@@ -21,4 +21,8 @@ public class MainFrame extends JFrame
 		
 		
 	}
+
+	public void refresh(ArrayList<Homme> list) {
+		m.refresh(list);
+	}
 }

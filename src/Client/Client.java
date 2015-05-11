@@ -20,6 +20,8 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	
 	private static final long serialVersionUID = 1L;
 	
+	Serveur serv;
+	
 	int width;
 	int height;
 	int pas;
@@ -30,10 +32,12 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	int nb_indiv;
 	
 	boolean isOk;
+	boolean estArrive;
 	
-	public Client(int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv) throws RemoteException
+	public Client(Serveur s, int w, int h, int p, Point dep, Point arri, ArrayList<Rectangle> rec, int indiv) throws RemoteException
 	{
 		super();
+		this.serv = s;
 		this.width = w;
 		this.height = h;
 		this.pas = p;
@@ -42,6 +46,9 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		this.obstacles = rec;
 		this.nb_indiv = indiv;
 		this.list = initListHomme(dep,arri,rec,nb_indiv,p);
+		
+		this.isOk = false;
+		this.estArrive = false;
 	}
 	
 	ArrayList<Homme> initListHomme(Point dep,Point arri,ArrayList<Rectangle> rec,int nb_indiv, int pas)
@@ -51,6 +58,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		{
 			res.add(new Homme(dep,arri,rec,pas,width, height));
 		}
+		
 		return res;
 	}
 	
@@ -91,30 +99,31 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	{
 		list=classement();
 		ArrayList<Homme> select;
+		isOk = true;
 		try 
 		{
 			select = selection();
 			// envoye serveur
 			
 			// réception du serveur des meilleurs des autres clients
-			ArrayList<ArrayList<Homme>> recep;
-			recep=new ArrayList<ArrayList<Homme>>(); // temporaire
+			ArrayList<ArrayList<Homme>> recep = serv.getDonnees((CallBackClient)this);
+			//recep=new ArrayList<ArrayList<Homme>>(); // temporaire
 			
-			ArrayList<Homme> res=new ArrayList<Homme>();
+			ArrayList<Homme> res = new ArrayList<Homme>();
 			
 			if(recep.size()==0) // pas d'autre client
 			{
 				for(int i=0;i<select.size();i++)
 				{
 					Random rand = new Random(); 
-					int rnd1=rand.nextInt(select.size()); 
-					int rnd2=rand.nextInt(select.size()); 
-					while(rnd2==rnd1)
+					int rnd1 = rand.nextInt(select.size()); 
+					int rnd2 = rand.nextInt(select.size()); 
+					while(rnd2 == rnd1)
 					{
-						rnd2=rand.nextInt(select.size());
+						rnd2 = rand.nextInt(select.size());
 					}
 					
-					Homme temp=croissement(select.get(rnd1),select.get(rnd2));
+					Homme temp = croissement(select.get(rnd1),select.get(rnd2));
 					res.add(mutation(temp));
 					
 					// suppression de ceux croisés comme ça par de réutilisation :
@@ -127,25 +136,26 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			else
 			{
 				recep.add(select); // ajout de nos meilleurs
-				for(int i=0;i<recep.get(0).size();i++)
+				for(int i = 0; i < recep.get(0).size(); i++)
 				{
 					Random rand = new Random();
-					int client=rand.nextInt(recep.size()); // choix du client
-					int client2=rand.nextInt(recep.size());
-					while(client2==client)
+					int client = rand.nextInt(recep.size()); // choix du client
+					int client2 = rand.nextInt(recep.size());
+					while(client2 == client)
 					{
-						client2=rand.nextInt(recep.size());
+						client2 = rand.nextInt(recep.size());
 					}
 					
-					int rnd1=rand.nextInt(recep.get(client).size());
-					int rnd2=rand.nextInt(recep.get(client2).size());
+					int rnd1 = rand.nextInt(recep.get(client).size());
+					int rnd2 = rand.nextInt(recep.get(client2).size());
 					
-					Homme temp=croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));
+					Homme temp = croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));
 					res.add(mutation(temp));
 				}
 			}
 			
 			renouvellement(res);
+			isOk = false;
 		}
 		catch (RemoteException e)
 		{
@@ -242,7 +252,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		try
 		{
 			Serveur serv = (Serveur) Naming.lookup("//127.0.0.1:5000/Serveur");
-			Client cl = new Client(serv.getM_x(),serv.getM_y(),
+			Client cl = new Client(serv,serv.getM_x(),serv.getM_y(),
 						serv.getPas(),serv.getDepart(),
 						serv.getArrivee(),serv.getListRect(),
 						serv.getNb_individus());
@@ -258,7 +268,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			jf.setVisible(true);
 			
 			serv.registerForCallback((CallBackClient)cl);
-			//while(!serv.EverybodyIsRegister());
+			while(!serv.EverybodyIsRegister());
 			/*
 			 * while(!atteint la sortie)
 			 * {
@@ -269,12 +279,20 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			*/
 			
 			int compteur = 0;
-			while(true) {
+			
+			while(!cl.estArrive) {
 				cl.reproduction();
 				compteur++;
 				System.out.println(compteur);
 				if(compteur%100==0) {
 					((MainFrame) jf).refresh(cl.list);
+				}
+				for(Homme l : cl.list)
+				{
+					if(l.estArrive)
+					{
+						cl.estArrive = true;
+					}
 				}
 			}
 

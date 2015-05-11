@@ -18,6 +18,7 @@ public class Homme {
 	ArrayList<Rectangle> obstacles;
 	int pas;
 	int arret;
+	boolean estArrive;
 	
 	public Homme(Point dep,Point arr, ArrayList<Rectangle> obs,int pa,int width, int height)
 	{
@@ -32,6 +33,7 @@ public class Homme {
 		largeur = height;
 		arret = width*2+height*2;
 		attributionAdn(width*2+height*2);
+		estArrive = false;
 	}
 	
 	public ArrayList<Integer> getAdn()
@@ -124,6 +126,7 @@ public class Homme {
 			if(act==arrivee)
 			{
 				System.out.println("Vous êtes arrivés à destionation !! bien :o");
+				estArrive = true;
 			}
 		}
 	}

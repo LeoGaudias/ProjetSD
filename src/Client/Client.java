@@ -150,6 +150,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		
 		Random rand = new Random();
 		int coupe=rand.nextInt(h1.getAdn().size()-2)+1; 
+		System.out.println("Coupe"+coupe);
 		for(int i=0;i<h1.getAdn().size();i++)
 		{
 			if(i<=coupe)
@@ -168,11 +169,9 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	Homme mutation(Homme h)
 	{
 		Homme res=h;
-		int pourcent = (int) (0.04*res.getAdn().size());
-		for(int i=0; i<pourcent; i++)
+		if(Math.random()*100<=4)
 		{
-			Random rand = new Random();
-			int pos=rand.nextInt(h.getAdn().size());
+			int pos=(int)Math.random()*h.getAdn().size();
 			Integer val=(int)Math.random()*8;
 			res.changer1Adn(pos, val);
 		}

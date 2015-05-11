@@ -110,47 +110,28 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			
 			ArrayList<Homme> res = new ArrayList<Homme>();
 			
+			
 			if(recep.size()==0) // pas d'autre client
 			{
-				for(int i=0;i<select.size();i++)
-				{
-					Random rand = new Random(); 
-					int rnd1 = rand.nextInt(select.size()); 
-					int rnd2 = rand.nextInt(select.size()); 
-					while(rnd2 == rnd1)
-					{
-						rnd2 = rand.nextInt(select.size());
-					}
-					
-					Homme temp = croissement(select.get(rnd1),select.get(rnd2));
-					res.add(mutation(temp));
-					
-					// suppression de ceux croisés comme ça par de réutilisation :
-					// à voir si un homme n'a pas le droit d'avoir plus d'un enfant
-					// s'il a le droit il suffit de vérifier que l'enfant créé n'est pas déjà présent dans res
-				//	select.remove(rnd1);
-				//	select.remove(rnd2);
-				}
+				recep.add(select);
 			}
-			else
+
+			recep.add(select); // ajout de nos meilleurs
+			for(int i = 0; i < recep.get(0).size(); i++)
 			{
-				recep.add(select); // ajout de nos meilleurs
-				for(int i = 0; i < recep.get(0).size(); i++)
+				Random rand = new Random();
+				int client = rand.nextInt(recep.size()); // choix du client
+				int client2 = rand.nextInt(recep.size());
+				while(client2 == client)
 				{
-					Random rand = new Random();
-					int client = rand.nextInt(recep.size()); // choix du client
-					int client2 = rand.nextInt(recep.size());
-					while(client2 == client)
-					{
-						client2 = rand.nextInt(recep.size());
-					}
-					
-					int rnd1 = rand.nextInt(recep.get(client).size());
-					int rnd2 = rand.nextInt(recep.get(client2).size());
-					
-					Homme temp = croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));
-					res.add(mutation(temp));
+					client2 = rand.nextInt(recep.size());
 				}
+				
+				int rnd1 = rand.nextInt(recep.get(client).size());
+				int rnd2 = rand.nextInt(recep.get(client2).size());
+				
+				Homme temp = croissement(recep.get(client).get(rnd1),recep.get(client2).get(rnd2));
+				res.add(mutation(temp));
 			}
 			
 			renouvellement(res);

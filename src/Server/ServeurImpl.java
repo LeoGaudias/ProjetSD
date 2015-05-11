@@ -292,7 +292,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	}
 	
 	// appelé que par le serveur lui même
-	private static void startRegistry(int PortNum)throws RemoteException
+	public void startRegistry(int PortNum)throws RemoteException
 	{
 		Registry registry;
 		try
@@ -400,7 +400,7 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 					Integer.parseInt(args[4]),
 					Integer.parseInt(args[5]),
 					Integer.parseInt(args[6]));
-			startRegistry(Integer.parseInt(args[0]));
+			serv.startRegistry(Integer.parseInt(args[0]));
 			Naming.rebind("rmi://localhost:"+ args[0] + "/Serveur", serv);
 			System.out.println("Serveur en service");
 		}

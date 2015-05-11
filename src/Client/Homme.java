@@ -9,6 +9,8 @@ import Obstacle.Rectangle;
 
 public class Homme implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	private ArrayList<Integer> adn;
 	int longueur;
 	int largeur;

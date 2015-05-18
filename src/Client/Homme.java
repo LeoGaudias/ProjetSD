@@ -78,7 +78,7 @@ public class Homme implements Serializable
 			int deplacement=deplacementRandom();
 			adn.add(deplacementRandom());
 			
-			if(mort==false && !act.equals(arrivee))
+			if(mort==false && !act.equals(arrivee) && !estArrive)
 			{
 				switch(deplacement)
 				{
@@ -138,6 +138,7 @@ public class Homme implements Serializable
 				{
 					System.out.println("Vous êtes arrivés à destionation !! bien :o");
 					estArrive = true;
+					arret= i;
 				}
 				if(mort==false) {
 					parcours.add(new Point(act.x, act.y));
@@ -226,6 +227,11 @@ public class Homme implements Serializable
 	
 	double distance_actuel_arrive()
 	{
-		return Math.sqrt(Math.pow(arrivee.x-act.x, 2)+Math.pow(arrivee.y-act.y, 2));
+		double distance = Math.sqrt(Math.pow(arrivee.x-act.x, 2)+Math.pow(arrivee.y-act.y, 2));
+		double poids =0;
+		if(mort==true) {
+			poids = 0.1*distance;
+		}
+		return poids + distance;
 	}
 }

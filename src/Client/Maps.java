@@ -92,7 +92,7 @@ public class Maps implements GLEventListener {
 		
 			//int modulo = 1;
 			
-			for(int j=0; j<list_hommes.get(i).getParcours().size()-1; j++) {
+			for(int j=0; j<list_hommes.get(i).getParcours().size(); j++) {
 				//if(modulo%(list_hommes.get(i).getAdn().size()/50)==0) {
 				gl.glVertex3d((double)list_hommes.get(i).getParcours().get(j).x/width,(double) list_hommes.get(i).getParcours().get(j).y/height, 0);
 				//}

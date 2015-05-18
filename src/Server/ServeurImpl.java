@@ -390,22 +390,22 @@ public class ServeurImpl extends UnicastRemoteObject implements Serveur
 	
 	public static void main(String[] args)
 	{
-		if(args.length != 7)
+		if(args.length != 8)
 		{
-			System.out.println("Usage : java ServerImpl <port> <nb Obstacle> <Size x>"
+			System.out.println("Usage : java ServerImpl <adresse> <port> <nb Obstacle> <Size x>"
 					+ "<Size y> <taille pas> <nb individu> <nb Client>");
 			System.exit(0);
 		}
 		try
 		{
-			ServeurImpl serv = new ServeurImpl(Integer.parseInt(args[1]),
-					Integer.parseInt(args[2]),
+			ServeurImpl serv = new ServeurImpl(Integer.parseInt(args[2]),
 					Integer.parseInt(args[3]),
 					Integer.parseInt(args[4]),
 					Integer.parseInt(args[5]),
-					Integer.parseInt(args[6]));
-			serv.startRegistry(Integer.parseInt(args[0]));
-			Naming.rebind("rmi://localhost:"+ args[0] + "/Serveur", serv);
+					Integer.parseInt(args[6]),
+					Integer.parseInt(args[7]));
+			serv.startRegistry(Integer.parseInt(args[1]));
+			Naming.rebind("rmi://"+args[0]+":"+ args[1] + "/Serveur", serv);
 			System.out.println("Serveur en service");
 		}
 		catch (Exception e)

@@ -13,6 +13,7 @@ public class Homme implements Serializable
 	
 	private ArrayList<Integer> adn;
 	private ArrayList<Point> parcours;
+	Rectangle arr_re;
 	int longueur;
 	int largeur;
 	boolean mort;
@@ -37,6 +38,7 @@ public class Homme implements Serializable
 		longueur = width;
 		largeur = height;
 		arret = width*2+height*2;
+		arr_re = new Rectangle(new Point(arrivee.x-10, arrivee.y+10), new Point(arrivee.x+10, arrivee.y+10), new Point(arrivee.x+10, arrivee.y-10), new Point(arrivee.x-10, arrivee.y-10));
 		attributionAdn(width*2+height*2);
 		//estArrive = false;
 	}
@@ -132,7 +134,7 @@ public class Homme implements Serializable
 					arret=i;
 				}
 				
-				if(act==arrivee)
+				if(act==arrivee || arr_re.isInside(act))
 				{
 					System.out.println("Vous êtes arrivés à destionation !! bien :o");
 					estArrive = true;

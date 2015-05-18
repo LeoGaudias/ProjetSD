@@ -289,6 +289,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 					if(l.estArrive)
 					{
 						cl.estArrive = true;
+						((MainFrame) jf).refresh(cl.list);
 					}
 				}
 			}

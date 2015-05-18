@@ -10,6 +10,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 
+
 public class Maps implements GLEventListener {
 	
 	public GLCanvas canvas;
@@ -85,34 +86,20 @@ public class Maps implements GLEventListener {
 	void drawDeplacement(GL2 gl, int tailleDeplacement)
 	{
 		for(int i=0; i<list_hommes.size(); i++) {
-			boolean end = true;
 			gl.glBegin(GL2.GL_LINE_STRIP);
 			Random randcolor = new Random();
 			gl.glColor3f(randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f, randcolor.nextInt(256)/255f);
 		
-			Point p = new Point(list_hommes.get(i).depart.x,list_hommes.get(i).depart.y); //point de départ
-			gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
-			int modulo = 1;
-			for(int j=0; j<list_hommes.get(i).getAdn().size(); j++)
-			{
-				p = list_hommes.get(i).setPositionCourante(p, j);
-				if(list_hommes.get(i).arret == j)
-				{
-					end = false;
-					gl.glEnd();
-					break;	 
-				}
-				if(modulo%(list_hommes.get(i).getAdn().size()/100)==0)
-				{
-					gl.glVertex3d((double)p.x/width,(double) p.y/height, 0);
-				}
-				 modulo++;
-				
+			//int modulo = 1;
+			
+			for(int j=0; j<list_hommes.get(i).getParcours().size()-1; j++) {
+				//if(modulo%(list_hommes.get(i).getAdn().size()/50)==0) {
+				gl.glVertex3d((double)list_hommes.get(i).getParcours().get(j).x/width,(double) list_hommes.get(i).getParcours().get(j).y/height, 0);
+				//}
+				//modulo++;	
 			}
-			if(end)
-			{
-				gl.glEnd();
-			}
+			gl.glEnd();
+	
 		}
 	}
 

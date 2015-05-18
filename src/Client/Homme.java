@@ -12,6 +12,7 @@ public class Homme implements Serializable
 	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Integer> adn;
+	private ArrayList<Point> parcours;
 	int longueur;
 	int largeur;
 	boolean mort;
@@ -27,8 +28,9 @@ public class Homme implements Serializable
 	{
 		mort=false;
 		adn = new ArrayList<Integer>();
-		depart=dep;
-		arrivee=arr;
+		parcours = new ArrayList<Point>();
+		depart=new Point(dep.x, dep.y);
+		arrivee=new Point(arr.x, arr.y);
 		act=new Point(dep.x, dep.y);
 		obstacles=obs;
 		pas=pa;
@@ -36,12 +38,16 @@ public class Homme implements Serializable
 		largeur = height;
 		arret = width*2+height*2;
 		attributionAdn(width*2+height*2);
-		estArrive = false;
+		//estArrive = false;
 	}
 	
 	public ArrayList<Integer> getAdn()
 	{
 		return adn;
+	}
+	
+	public ArrayList<Point> getParcours() {
+		return parcours;
 	}
 	
 	public void setAdn(ArrayList<Integer> a)
@@ -64,6 +70,7 @@ public class Homme implements Serializable
 	
 	void attributionAdn(int taille)
 	{
+		parcours.add(new Point(act.x, act.y));
 		for(int i = 0; i < taille; ++i)
 		{
 			int deplacement=deplacementRandom();
@@ -117,20 +124,25 @@ public class Homme implements Serializable
 						break;
 					}
 				}
+				
+				if(!(act.x <=longueur && act.x >=-longueur && act.y <=largeur && act.y >=-largeur))
+				{
+					//System.out.println("Collision avec le cadre à la "+ i + " itération");
+					mort=true;
+					arret=i;
+				}
+				
+				if(act==arrivee)
+				{
+					System.out.println("Vous êtes arrivés à destionation !! bien :o");
+					estArrive = true;
+				}
+				if(mort==false) {
+					parcours.add(new Point(act.x, act.y));
+				}
 			}
 			
 			
-			if(!(act.x <=longueur && act.x >=-longueur && act.y <=largeur && act.y >=-largeur))
-			{
-				//System.out.println("Collision avec le cadre à la "+ i + " itération");
-				mort=true;
-			}
-			
-			if(act==arrivee)
-			{
-				System.out.println("Vous êtes arrivés à destionation !! bien :o");
-				estArrive = true;
-			}
 		}
 	}
 

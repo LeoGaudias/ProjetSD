@@ -61,7 +61,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 		return res;
 	}
 	
-	ArrayList<Homme> classement() // à modifier pour prendre en compte la collision
+	ArrayList<Homme> classement() // ï¿½ modifier pour prendre en compte la collision
 	{
 		ArrayList<Homme> res=new ArrayList<Homme>();
 		for(int i=0;i<list.size();i++)
@@ -104,7 +104,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			select = selection();
 			// envoye serveur
 			
-			// réception du serveur des meilleurs des autres clients
+			// rï¿½ception du serveur des meilleurs des autres clients
 			ArrayList<ArrayList<Homme>> recep = serv.getDonnees((CallBackClient)this);
 			//recep=new ArrayList<ArrayList<Homme>>(); // temporaire
 			
@@ -231,7 +231,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 	{
 		if(args.length != 2)
 		{
-			System.out.println("Usage : java ServerImpl <adresseip> <port>");
+			System.out.println("Usage : java Client <adresseip> <port>");
 			System.exit(0);
 		}
 		
@@ -245,7 +245,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 						serv.getPas(),serv.getDepart(),
 						serv.getArrivee(),serv.getListRect(),
 						serv.getNb_individus());
-			// L'interface peut peut être suffir au lieu d'envoyer tout l'objet client
+			// L'interface peut peut ï¿½tre suffir au lieu d'envoyer tout l'objet client
 			
 			//cl.reproduction();
 			
@@ -267,7 +267,7 @@ public class Client extends UnicastRemoteObject implements CallBackClient
 			 * while(!atteint la sortie)
 			 * {
 			 * 	ArrayList<ArrayList<Homme>> = serv.getDonnees;
-			 *  puis traité ces données, je ne sais pas si la fonction est faite ou non
+			 *  puis traitï¿½ ces donnï¿½es, je ne sais pas si la fonction est faite ou non
 			 * }
 			 * 
 			*/
